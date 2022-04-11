@@ -1,7 +1,7 @@
 # CSE330
 Eden Tibebu 472813 edentibebu
 
-Sichi Onyemeh 473665 sichi-o
+Sichi Onyemeh 473665 sichi-o <p>
 Approved by Pingchuan Huang.<p>
 Rubric:<p>
 
