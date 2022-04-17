@@ -30,8 +30,17 @@ class Game extends React.Component {
     }
 
     else{
-      return (
-            <div className="game" key={"game"}>
+
+      const results = [];
+      
+      for(let i =0; i < this.props.current_game.userlist.length; i++){
+        results.push(
+          <div>{this.props.current_game.userlist[i]}</div>
+        )
+      }
+
+      results.push(
+        <div className="game" key={"game"}>
               <button className="leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: this.props.current_game, user: this.props.username }) }>Leave Game</button>
               <div className="game-board">
                 <Board />
@@ -41,7 +50,11 @@ class Game extends React.Component {
                 <ol>{/* TODO */}</ol>
               </div>
             </div>
-      );
+
+      )
+      
+
+      return results;
     }
     
   }

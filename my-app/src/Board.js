@@ -6,11 +6,11 @@ class Board extends React.Component {
       return <Square value={i} />;
     }
     render() {
-      const status = 'Player 1';
+      //const status = 'Player 1';
   
       return (
         <div>
-          <div className="status">{status}</div>
+          {/* <div className="status">{status}</div> */}
           <div className="board-row">
             {this.renderSquare(" ")}
             {this.renderSquare(" ")}
