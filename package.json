@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/cse330-spring-2022/creativeproject-final-472813-473665#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.17.3",
     "nodemon": "^2.0.15"
   }
