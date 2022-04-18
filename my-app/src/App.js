@@ -1,6 +1,7 @@
 import React from 'react';
 import io from 'socket.io-client'
 import Room from './Room';
+import './App.css';
 
 
 //Citated from: reactjs.org

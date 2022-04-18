@@ -10,7 +10,6 @@ class Room extends React.Component {
             joinedRoom: false,
             current_game: null
         };
-
     }
 
     render() {
