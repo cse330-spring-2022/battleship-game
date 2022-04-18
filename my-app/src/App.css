@@ -1,0 +1,14 @@
+button.square {
+    width: 7vw;
+    height: 7vw;
+    border-radius: 0vw;
+    border: 1px solid black;
+    margin: 0;
+    margin-right: 0.2vw;
+}
+
+.label{
+    display: grid;
+    grid-template-columns: 7vw 7vw 7vw 7vw 7vw 7vw 7vw 7vw 7vw 7vw 7vw;
+    grid-template-rows: auto auto auto auto auto auto auto auto auto auto auto;
+}
