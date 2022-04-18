@@ -123,7 +123,6 @@ io.sockets.on("connection", function (socket) {
             gamerooms[final].userlist.push(data["user"]);
             io.sockets.to(data["this_game"].name).emit("join_room_to_client", { this_game: gamerooms[final], game_list: gamerooms, username: data["user"] });
         }
-
         else{
             let msg = "The limit for users in a game has already been met";
             io.sockets.to(userId).emit("error_to_client", { message: msg });
