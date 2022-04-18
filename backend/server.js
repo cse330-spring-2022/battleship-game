@@ -177,7 +177,6 @@ io.sockets.on("connection", function (socket) {
 
         // the specific user has to leave
         io.sockets.to(userId).emit("leave_room_to_client", { game_list: gamerooms }); // broadcast the message to other users
-       
     })
 
 });

@@ -6,28 +6,28 @@ class Board extends React.Component {
       return <Square value={i} />;
     }
     render() {
-      //const status = 'Player 1';
-  
-      return (
-        <div>
-          {/* <div className="status">{status}</div> */}
-          <div className="board-row">
+      
+      const results = [];
+
+      for(let i = 0; i < 11; i++){
+        results.push(
+          <div className="board-row" key={"board_" + i}>
+            {this.renderSquare(" ")}
+            {this.renderSquare(" ")}
+            {this.renderSquare(" ")}
+            {this.renderSquare(" ")}
+            {this.renderSquare(" ")}
+            {this.renderSquare(" ")}
+            {this.renderSquare(" ")}
+            {this.renderSquare(" ")}
             {this.renderSquare(" ")}
             {this.renderSquare(" ")}
             {this.renderSquare(" ")}
           </div>
-          <div className="board-row">
-            {this.renderSquare(" ")}
-            {this.renderSquare(" ")}
-            {this.renderSquare(" ")}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(" ")}
-            {this.renderSquare(" ")}
-            {this.renderSquare(" ")}
-          </div>
-        </div>
-      );
+        )
+      }
+
+      return results;
     }
 }
 
