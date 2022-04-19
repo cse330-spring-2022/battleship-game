@@ -17,6 +17,11 @@ class Game extends React.Component {
 
     socketio.removeAllListeners("leave_room_to_client");
     socketio.on("leave_room_to_client", (data) => {
+      // when you leave all the board is cleared visually
+      for(let i = 0; i < document.getElementsByClassName("square").length; i++){
+        document.getElementsByClassName("square")[i].style.backgroundColor = "white";
+      }
+
       this.setState({
         gamerooms: data.game_list,
         leftroom: true

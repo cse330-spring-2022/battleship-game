@@ -172,6 +172,9 @@ io.sockets.on("connection", function (socket) {
             gamerooms[game_index].userlist.splice(user_index, 1); // remove number using index
         }
 
+        // Clears the movelist
+        gamerooms[game_index].movelist = [];
+
         socket.leave(`${data["this_game"].name}`);
 
         // People still in the game would rejoin as if nothing ahnges
