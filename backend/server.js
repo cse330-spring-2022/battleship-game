@@ -24,6 +24,8 @@ function Gameroom(owner, name){
     this.userlist = [];
     this.banned_userlist = [];
     this.password = "";
+    //contains the moves list as a list of postiions
+    this.movelist = [];
 
     this.join_room = function(user) {
         this.userlist.push(user);
@@ -177,6 +179,34 @@ io.sockets.on("connection", function (socket) {
 
         // the specific user has to leave
         io.sockets.to(userId).emit("leave_room_to_client", { game_list: gamerooms }); // broadcast the message to other users
-    })
+    });
+
+
+    socket.on('pick_to_server', function(data) {
+
+        // Calculating the final index to use to find the specific game
+        let index = 0;
+        let final = -1;
+
+        gamerooms.forEach(function(game){
+            if(game.name == data["this_game"].name){
+                final = index;
+                return;
+            }
+            index++;
+        })
+
+        console.log("the position is " + data["position"]);
+
+        //pushes the move to the array of moves
+        gamerooms[final].movelist.push(data["position"]);
+
+        // send out the updated list of the game and the list of gamerooms
+        io.sockets.to(`${data["this_game"].name}`).emit("pick_to_client", { this_game: gamerooms[final], game_list: gamerooms, position: data["position"]});
+
+
+    });
+
+
 
 });

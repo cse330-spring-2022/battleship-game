@@ -33,9 +33,9 @@ class Game extends React.Component {
 
       const results = [];
       
-      for(let i =0; i < this.props.current_game.userlist.length; i++){
+      for(let i = 0; i < this.props.current_game.userlist.length; i++){
         results.push(
-          <div>{this.props.current_game.userlist[i]}</div>
+          <div key={this.props.current_game.userlist[i]}>{this.props.current_game.userlist[i]}</div>
         )
       }
 
@@ -43,7 +43,7 @@ class Game extends React.Component {
         <div className="game" key={"game"}>
               <button className="leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: this.props.current_game, user: this.props.username }) }>Leave Game</button>
               <div className="game-board">
-                <Board />
+                <Board current_game={this.props.current_game} socket={socketio}/>
               </div>
               <div className="game-info">
                 <div>{/* status */}</div>
