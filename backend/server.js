@@ -118,6 +118,9 @@ io.sockets.on("connection", function (socket) {
             index++;
         })
 
+        // Clears the movelist
+        gamerooms[final].movelist = [];
+
         // If it's not currently in the user list then add it
         if(!gamerooms[final].userlist.includes(data["user"]) && gamerooms[final].userlist.length < 2){
              // When a user joins a room they are not in a game
