@@ -10,13 +10,10 @@ class Square extends React.Component {
     this.pick = this.pick.bind(this);
   }
 
-  
   pick(){
     let socketio = this.props.socket;
-
     socketio.emit("pick_to_server", { user: this.props.username, this_game: this.props.current_game, position: this.props.position});
 
-    
     //document.getElementById(this.props.position).style.backgroundColor = "red";
   }
 
