@@ -2,8 +2,8 @@ import React from 'react';
 import Square from './Square';
 
 class Board extends React.Component {
-    renderSquare(label) {
-      return <Square isLabel="false" value={label} />;
+    renderSquare(label, position) {
+      return <Square isLabel="false" value={label} position={position}/>;
     }
 
     renderLabel(label) {
@@ -13,7 +13,8 @@ class Board extends React.Component {
     render() {
       
       const results = [];
-      
+      const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+      //const numbers = ["1", "2", "3", "4", "5", "6", ]
       //creating row 1
       results.push(
         <div className="board-row" key={"board_label"}>
@@ -32,19 +33,20 @@ class Board extends React.Component {
       );
 
       for(let i = 0; i < 10; i++){
+        
         results.push(
           <div className="board-row" key={"board_" + i}>
             {this.renderLabel(i+1)}
-            {this.renderSquare(" ")}
-            {this.renderSquare(" ")}
-            {this.renderSquare(" ")}
-            {this.renderSquare(" ")}
-            {this.renderSquare(" ")}
-            {this.renderSquare(" ")}
-            {this.renderSquare(" ")}
-            {this.renderSquare(" ")}
-            {this.renderSquare(" ")}
-            {this.renderSquare(" ")}
+            {this.renderSquare(" ", letters[0] + (i+1))}
+            {this.renderSquare(" ", letters[1] + (i+1))}
+            {this.renderSquare(" ", letters[2] + (i+1))}
+            {this.renderSquare(" ", letters[3] + (i+1))}
+            {this.renderSquare(" ", letters[4] + (i+1))}
+            {this.renderSquare(" ", letters[5] + (i+1))}
+            {this.renderSquare(" ", letters[6] + (i+1))}
+            {this.renderSquare(" ", letters[7] + (i+1))}
+            {this.renderSquare(" ", letters[8] + (i+1))}
+            {this.renderSquare(" ", letters[9] + (i+1))}
           </div>
         )
       }

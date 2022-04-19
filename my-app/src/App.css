@@ -5,6 +5,7 @@ button.square {
     border: 1px solid black;
     padding: 0;
     display: flex;
+    cursor: pointer;
 }
 
 .game-board{
