@@ -16,7 +16,6 @@ class Room extends React.Component {
 
         console.log("this is the username we want: " + this.props.username);
 
-        
         const results = [];
         let socketio = this.props.socket;
         const joinedRoom = this.state.joinedRoom;
@@ -54,10 +53,10 @@ class Room extends React.Component {
         socketio.removeAllListeners("join_room_to_client");
         socketio.on("join_room_to_client", (data) => {
 
-            // when you leave all the board is cleared visually
-            for(let i = 0; i < document.getElementsByClassName("square").length; i++){
-                document.getElementsByClassName("square")[i].style.backgroundColor = "white";
-            }
+            // // when you leave all the board is cleared visually
+            // for(let i = 0; i < document.getElementsByClassName("square").length; i++){
+            //     document.getElementsByClassName("square")[i].style.backgroundColor = "white";
+            // }
 
             console.log("this user: " + data.username + " joined this chat: " + data.this_game.name);
 
