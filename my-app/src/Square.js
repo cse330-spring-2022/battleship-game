@@ -33,9 +33,10 @@ class Square extends React.Component {
       //   isPicked: true,
       //   gamerooms: data.game_list
       // })
+      for(let i = 0; i < data.this_game.movelist.length; i++){
+        console.log(data.this_game.movelist[i]);
+      }
     });
-    //
-    
 
     if(isLabel === "false"){
       return (

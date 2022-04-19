@@ -198,8 +198,11 @@ io.sockets.on("connection", function (socket) {
 
         console.log("the position is " + data["position"]);
 
-        //pushes the move to the array of moves
-        gamerooms[final].movelist.push(data["position"]);
+        // if the moveslist doesn't contain the move, then add it
+        if(!gamerooms[final].movelist.includes(data["position"])){
+            //pushes the move to the array of moves
+            gamerooms[final].movelist.push(data["position"]);
+        }
 
         // send out the updated list of the game and the list of gamerooms
         io.sockets.to(`${data["this_game"].name}`).emit("pick_to_client", { this_game: gamerooms[final], game_list: gamerooms, position: data["position"]});
