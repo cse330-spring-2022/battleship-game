@@ -8,15 +8,39 @@ class Square extends React.Component {
       gamerooms: this.props.game_list,
       current_game: this.props.current_game,
       username: this.props.username,
+      isHit: false,
+      isMiss: false,
+      isSub: false,
+      subVal: "",
+      hitVal: "",
+      missVal: "",
       pickedVal: ""
     } 
 
     this.pick = this.pick.bind(this);
+    this.attack = this.attack.bind(this);
   }
 
   pick(){ 
     let socketio = this.props.socket;
     socketio.emit("pick_to_server", { user: this.state.username, this_game: this.state.current_game, position: this.props.position}); 
+  }
+
+  attack(){
+    let socketio = this.props.socket;
+    //let user_index;
+    let victim_index;
+
+    if(this.state.current_game.userlist[0].name == this.state.username.name){
+      // user_index = 0;
+      victim_index = 1;
+    }
+    else{
+      //user_index = 1;
+      victim_index = 0;
+    }
+
+    socketio.emit("attack_to_server", { user: this.state.username, victim_index: victim_index, this_game: this.state.current_game, position: this.props.position}); 
   }
 
   render() {
@@ -25,6 +49,9 @@ class Square extends React.Component {
     let socketio = this.props.socket;
     const isPicked = this.state.isPicked;
     const current_game = this.state.current_game;
+    const isHit = this.state.isHit;
+    const isMiss = this.state.isMiss;
+    const isSub = this.state.isSub;
     const username = this.state.username;
  
     console.log("WE ARE IN SQUARE AND ITS VALUE OF START IS: " + this.props.start);
@@ -40,44 +67,66 @@ class Square extends React.Component {
       }) 
     });
 
-    socketio.removeAllListeners("display_to_client");
-    socketio.on("display_to_client", (data) => {
-      if(!data["status"]){
-        this.setState({
-          isPicked: true,
-          pickedVal: data.position
+    socketio.removeAllListeners("hit_to_client");
+    socketio.on("hit_to_client", (data) => {
+      this.setState({
+        isHit: true,
+        hitVal: data.position,
+        current_game: data.this_game,
+        username: data.username
+      }) 
 
-        })
-      }
+      console.log(data.username.name + " has a score of: " + data.username.score);
     });
+
+    socketio.removeAllListeners("miss_to_client");
+    socketio.on("miss_to_client", (data) => {
+      this.setState({
+        isMiss: true,
+        missVal: data.position,
+        current_game: data.this_game,
+        username: data.username
+      }) 
+    })
+
+    // duisplay for the actual victim that their ship is lost
+    socketio.removeAllListeners("sub_to_client");
+    socketio.on("sub_to_client", (data) => {
+      this.setState({
+        isSub: true,
+        subVal: data.position,
+        current_game: data.this_game,
+        username: data.username
+      }) 
+    })
+
+    //   console.log(data.username.name + " has a score of: " + data.username.score);
+    // });
 
     if(isLabel === "false"){ 
 
-      if((current_game.userlist[0].ready == true) && (current_game.userlist[1].ready == true)){
-        console.log("this.props.current_game.userlist[0].ready = " + current_game.userlist[0].ready);
-        console.log("this.props.current_game.userlist[1].ready = " + current_game.userlist[1].ready);
-      }
-
-      
-
-      // else{
-      //   console.log("we are in square and the game HAS NOT started");
-      // }
-
       if(isPicked){ 
-        console.log("we picked something");
-        console.log("pickedVAL: " + this.state.pickedVal);
         document.getElementById(this.state.pickedVal).style.backgroundColor = "blue"; 
 
-        // for(let i = 0; i < username.ships.length; i++){
-        //   console.log(username.name + " picked: " + username.ships[i]);
-        // }  
       }
+
+      if(isHit){ 
+        document.getElementById(this.state.hitVal).style.backgroundColor = "green";  
+      }
+
+      if(isMiss){
+        document.getElementById(this.state.missVal).style.backgroundColor = "red"; 
+      }
+
+      if(isSub){
+        document.getElementById(this.state.subVal).style.backgroundColor = "gray"; 
+      }
+
 
       if(this.props.start){
         console.log("we are in square and the game started");
         return (
-          <button className="square" id={this.props.position} key={this.props.position} onClick={() => console.log("WE DID IT!!")}>
+          <button className="square" id={this.props.position} key={this.props.position} onClick={() => this.attack()}>
             {this.props.value}
           </button>
         );
@@ -90,13 +139,6 @@ class Square extends React.Component {
       );
     }
     else {
-      console.log("in the else: " + this.props.position);
-      // this.setState({
-      //   isPicked: false,
-      //   pickedVal: ""
-      // })
-
-      // document.getElementById(this.state.pickedVal).style.backgroundColor = "white";
       return (   
         <div className="label" key={this.props.position + "_label"}>
           {this.props.value}
@@ -106,5 +148,4 @@ class Square extends React.Component {
 
   }
 }
-
 export default Square;
