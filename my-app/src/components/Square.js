@@ -53,8 +53,6 @@ class Square extends React.Component {
     const isMiss = this.state.isMiss;
     const isSub = this.state.isSub;
     const username = this.state.username;
- 
-    console.log("WE ARE IN SQUARE AND ITS VALUE OF START IS: " + this.props.start);
     
     socketio.removeAllListeners("pick_to_client");
     socketio.on("pick_to_client", (data) => {
@@ -124,7 +122,6 @@ class Square extends React.Component {
 
 
       if(this.props.start){
-        console.log("we are in square and the game started");
         return (
           <button className="square" id={this.props.position} key={this.props.position} onClick={() => this.attack()}>
             {this.props.value}

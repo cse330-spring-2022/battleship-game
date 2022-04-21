@@ -190,7 +190,7 @@ io.sockets.on("connection", function (socket) {
         }
 
         // // Clears the movelist
-        // gamerooms[game_index].movelist = [];
+        // gamerooms[game_index].userl = [];
 
         socket.leave(`${data["this_game"].name}`);
 

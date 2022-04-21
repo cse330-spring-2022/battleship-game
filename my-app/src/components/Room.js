@@ -59,7 +59,7 @@ class Room extends React.Component {
             //     document.getElementsByClassName("square")[i].style.backgroundColor = "white";
             // }
 
-            console.log("this user: " + data.username.name + " joined this chat: " + data.this_game.name);
+            //console.log("this user: " + data.username.name + " joined this chat: " + data.this_game.name);
 
             this.setState({
                 joinedRoom: true,
