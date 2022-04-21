@@ -17,19 +17,25 @@ const socketio = require("socket.io")(http, {
 
 const io = socketio.listen(server);
 
+const max_ships = 7;
+
 // Here define the Gameroom object
 function Gameroom(owner, name){
     this.name = name;
     this.owner = owner;
     this.userlist = [];
-    this.banned_userlist = [];
-    this.password = "";
+
     //contains the moves list as a list of postiions
     this.movelist = [];
 
-    this.join_room = function(user) {
-        this.userlist.push(user);
-    }
+}
+
+function User(name){
+    this.name = name;
+    this.movelist = [];
+    this.ships = [];
+    this.score = 0;
+    this.ready = false;
 }
 
 // The array of gamerooms
@@ -38,6 +44,8 @@ let gamerooms = [];
 // The array of allowed users
 let allowed_users = [];
 
+//let current_user;
+
 
 //TODO: FIGURE OUT SENDING DATA WITH REQ AND REQ STUFF
 app.post('/login', (req, res) => {
@@ -45,10 +53,12 @@ app.post('/login', (req, res) => {
     let user = req.body.username;
 
     console.log("THIS IS THE USERNAME " + user);
-    let new_user = user;
+    let new_user = new User(user);
+    //current_user = new_user;
+   // console.log("the surrent user has been set to: " + current_user.name);
 
-    if(!allowed_users.includes(new_user)){
-        allowed_users.push(new_user);
+    if(!allowed_users.includes(new_user.name)){
+        allowed_users.push(new_user.name);
 
         res.json({ message: "success" , game_list: gamerooms, username: new_user });
     }
@@ -72,7 +82,7 @@ io.sockets.on("connection", function (socket) {
     // When it gets this message, it inserts a new room to the added to the gameroom
     socket.on('insert_room_to_server', function (data) {
         //socket.join("not_in_a_game");
-        console.log("insert room of: " + data["user"] + " with the name: " + data["game_name"]);
+        console.log("insert room of: " + data["user"].name + " with the name: " + data["game_name"]);
         //Creates a game room
         let default_gameroom = new Gameroom(data["user"], data["game_name"]);
 
@@ -87,7 +97,7 @@ io.sockets.on("connection", function (socket) {
             }
         }
 
-        // If the chtroom exists, then alert the user
+        // If the chatroom exists, then alert the user
         if(match){
             let msg = "Gameroom with that name already exists!";
             io.sockets.to(userId).emit("error_to_client", { message: msg });
@@ -117,9 +127,10 @@ io.sockets.on("connection", function (socket) {
             }
             index++;
         })
+      
 
-        // Clears the movelist
-        gamerooms[final].movelist = [];
+        // // Clears the movelist
+        // gamerooms[final].movelist = [];
 
         // If it's not currently in the user list then add it
         if(!gamerooms[final].userlist.includes(data["user"]) && gamerooms[final].userlist.length < 2){
@@ -161,7 +172,7 @@ io.sockets.on("connection", function (socket) {
         gamerooms.forEach(function(game){
             if(game.name == data["this_game"].name){
                 game.userlist.forEach(function(user){
-                    if(user == data["user"]){
+                    if(user.name == data["user"].name){
                         user_index = index_user_second;
                         return;
                     }
@@ -175,8 +186,8 @@ io.sockets.on("connection", function (socket) {
             gamerooms[game_index].userlist.splice(user_index, 1); // remove number using index
         }
 
-        // Clears the movelist
-        gamerooms[game_index].movelist = [];
+        // // Clears the movelist
+        // gamerooms[game_index].movelist = [];
 
         socket.leave(`${data["this_game"].name}`);
 
@@ -190,29 +201,83 @@ io.sockets.on("connection", function (socket) {
 
     socket.on('pick_to_server', function(data) {
 
-        // Calculating the final index to use to find the specific game
-        let index = 0;
-        let final = -1;
+        let index_game = 0;
+        let index_user = 0;
+        let index_user_second = 0;
 
+        let game_index = -1;
+        let user_index = -1;
+
+        //Gets the index of the game that we want to delete the user from
         gamerooms.forEach(function(game){
             if(game.name == data["this_game"].name){
-                final = index;
+                game_index = index_game;
                 return;
             }
-            index++;
+            index_game++;
         })
 
-        console.log("the position is " + data["position"]);
+        //Gets the index of the user we wnat to delete for the userlist in the specific chatroom
+        gamerooms.forEach(function(game){
+            if(game.name == data["this_game"].name){
+                game.userlist.forEach(function(user){
+                    if(user.name == data["user"].name){
+                        user_index = index_user_second;
+                        return;
+                    }
+                    index_user_second++;
+                })     
+            }
+            index_user++;
+        })
 
-        // if the moveslist doesn't contain the move, then add it
-        if(!gamerooms[final].movelist.includes(data["position"])){
-            //pushes the move to the array of moves
-            gamerooms[final].movelist.push(data["position"]);
+        
+
+        // Checks if the limit of ships picked is reached
+        let isLimitReached = false;
+        console.log("this is the name of the user when picked: " + data["user"].name);
+
+
+        
+
+       
+
+        // If the number of ships that the user has picked is less than 7, then add to the array
+        if(gamerooms[game_index].userlist[user_index].ships.length < max_ships){
+            if(!gamerooms[game_index].userlist[user_index].ships.includes(data["position"])){
+                gamerooms[game_index].userlist[user_index].ships.push(data["position"]);
+            }
         }
 
-        // send out the updated list of the game and the list of gamerooms
-        io.sockets.to(`${data["this_game"].name}`).emit("pick_to_client", { this_game: gamerooms[final], game_list: gamerooms, position: data["position"]});
+        if(gamerooms[game_index].userlist[user_index].ships.length == max_ships){
+                    gamerooms[game_index].userlist[user_index].ready = true;
+                    isLimitReached = true; 
+        }
 
+        console.log("ready status of: " +  gamerooms[game_index].userlist[user_index].name + " is " + gamerooms[game_index].userlist[user_index].ready);
+        // // Checks if the limit of ships picked is reached
+        // let isLimitReached = false;
+        // console.log("this is the name of the user when picked: " + data["user"].name);
+
+
+        // if(data["user"].ships.length == max_ships){
+        //     isLimitReached = true;    
+        // }
+
+        // // If the number of ships that the user has picked is less than 7, then add to the array
+        // if(data["user"].ships.length < max_ships){
+        //     if(!data["user"].ships.includes(data["position"])){
+        //         data["user"].ships.push(data["position"]);
+        //     }
+        // }
+
+       
+        console.log("the value of isLimitReached: " + isLimitReached);
+
+        // send out the updated list of the game and the list of gamerooms
+        io.sockets.to(userId).emit("pick_to_client", { username: gamerooms[game_index].userlist[user_index], this_game: gamerooms[game_index], position: data["position"], status: isLimitReached });
+
+       // io.sockets.to(userId).emit("display_to_client", { username: gamerooms[game_index].userlist[user_index], this_game: gamerooms[game_index], position: data["position"], status: isLimitReached });
 
     });
 

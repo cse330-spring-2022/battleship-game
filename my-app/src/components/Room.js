@@ -12,9 +12,11 @@ class Room extends React.Component {
         };
     }
 
+    
+
     render() {
 
-        console.log("this is the username we want: " + this.props.username);
+        console.log("this is the username we want: " + this.props.username.name);
 
         const results = [];
         let socketio = this.props.socket;
@@ -36,8 +38,7 @@ class Room extends React.Component {
             this.setState({
                 gamerooms: data.game_list
             })
-        })
-
+        })  
 
         if (this.state.gamerooms.length > 0) {
             for (let i = 0; i < this.state.gamerooms.length; i++) {
@@ -58,23 +59,36 @@ class Room extends React.Component {
             //     document.getElementsByClassName("square")[i].style.backgroundColor = "white";
             // }
 
-            console.log("this user: " + data.username + " joined this chat: " + data.this_game.name);
+            console.log("this user: " + data.username.name + " joined this chat: " + data.this_game.name);
 
             this.setState({
                 joinedRoom: true,
                 current_game: data.this_game
             })
         })
-
+        
+        
         socketio.removeAllListeners("error_to_client");
         socketio.on("error_to_client", (data) => {
             alert(data.message);
         });
 
         if(joinedRoom){
-            return (
-                <Game current_game={current_game} username={this.props.username} socket={socketio}/>
-            )
+            if(current_game.userlist.length == 2){
+                console.log("2 USERS ARE IN THE ROOM");
+               
+                return (
+                    <Game current_game={current_game} username={this.props.username} socket={socketio}/>
+                ) 
+            }
+            else{
+                // return (
+                //     <Game current_game={current_game} username={this.props.username} socket={socketio}/>
+                // )
+                
+                console.log("2 USERS NOT IN THE ROOM YET");
+            }
+            
         }
 
         else{

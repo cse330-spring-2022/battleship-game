@@ -35,7 +35,7 @@ class App extends React.Component {
           console.log("this login was successful")
           this.setState({
             isLoggedOn: true,
-            username: name,
+            username: data.username,
             gamerooms: data.game_list
           })
         }
@@ -66,7 +66,7 @@ class App extends React.Component {
           <label>Username:</label>
           <input id="username" type="text" />
           <button onClick={() => this.login(document.getElementById("username").value)}>
-            Log on
+            Log on 
           </button>
         </div>
       );
