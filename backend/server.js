@@ -117,7 +117,7 @@ io.sockets.on("connection", function (socket) {
        
         socket.join(`${data["this_game"].name}`);
 
-        data["user"].socket = userId;
+        //data["user"].socket = userId;
 
         // Calculating the final index to use to find the specific game
         let index = 0;
@@ -131,16 +131,50 @@ io.sockets.on("connection", function (socket) {
             index++;
         })
       
+        // let index_game = 0;
+        // let index_user = 0;
+        // let index_user_second = 0;
 
-        // // Clears the movelist
-        // gamerooms[final].movelist = [];
+        // let game_index = -1;
+        // let user_index = -1;
+
+        // //Gets the index of the game that we want to delete the user from
+        // gamerooms.forEach(function(game){
+        //     if(game.name == data["this_game"].name){
+        //         game_index = index_game;
+        //         return;
+        //     }
+        //     index_game++;
+        // })
+
+        // //Gets the index of the user we wnat to delete for the userlist in the specific chatroom
+        // gamerooms.forEach(function(game){
+        //     if(game.name == data["this_game"].name){
+        //         game.userlist.forEach(function(user){
+        //             if(user.name == data["user"].name){
+        //                 user_index = index_user_second;
+        //                 return;
+        //             }
+        //             index_user_second++;
+        //         })     
+        //     }
+        //     index_user++;
+        // })
+
+        // console.log("this is the game index " + game_index);
+        // console.log("this is the user index " + user_index);
+
+        //  Clears the shiplist
+        data["user"].ships = [];
+        data["user"].socket = userId;
+//
 
         // If it's not currently in the user list then add it
         if(!gamerooms[final].userlist.includes(data["user"]) && gamerooms[final].userlist.length < 2){
              // When a user joins a room they are not in a game
             socket.leave("not_in_a_game");
             gamerooms[final].userlist.push(data["user"]);
-            io.sockets.to(data["this_game"].name).emit("join_room_to_client", { this_game: gamerooms[final], game_list: gamerooms, username: data["user"] });
+            io.sockets.to(data["this_game"].name).emit("join_room_to_client", { this_game: gamerooms[final], game_list: gamerooms, username: data["user"]});
         }
         else{
             let msg = "The limit for users in a game has already been met";
@@ -161,6 +195,8 @@ io.sockets.on("connection", function (socket) {
 
         let game_index = -1;
         let user_index = -1;
+
+        let forfeit = false;
 
         //Gets the index of the game that we want to delete the user from
         gamerooms.forEach(function(game){
@@ -185,20 +221,27 @@ io.sockets.on("connection", function (socket) {
             index_user++;
         })
 
+        if(gamerooms[game_index].userlist.length == 2){
+            forfeit = true;
+        }
+
+        console.log("the state of forfeit is : " + forfeit);
+
         if(game_index != -1 || user_index != -1 ){
             gamerooms[game_index].userlist.splice(user_index, 1); // remove number using index
         }
 
-        // // Clears the movelist
-        // gamerooms[game_index].userl = [];
+        // //  Clears the shiplist
+        // gamerooms[game_index].userlist[user_index].ships = [];
+
 
         socket.leave(`${data["this_game"].name}`);
 
         // People still in the game would rejoin as if nothing ahnges
-        io.sockets.to(`${data["this_game"].name}`).emit("join_room_to_client", { this_game: gamerooms[game_index], game_list: gamerooms }); // broadcast the message to other users
+        io.sockets.to(`${data["this_game"].name}`).emit("join_room_to_client", { this_game: gamerooms[game_index], game_list: gamerooms, isForfeit: forfeit, forfeiter: data["user"].name }); // broadcast the message to other users
 
         // the specific user has to leave
-        io.sockets.to(userId).emit("leave_room_to_client", { game_list: gamerooms }); // broadcast the message to other users
+        io.sockets.to(userId).emit("leave_room_to_client", { game_list: gamerooms, isForfeit: forfeit, forfeiter: data["user"].name }); // broadcast the message to other users
     });
 
 

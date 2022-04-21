@@ -8,7 +8,9 @@ class Room extends React.Component {
         this.state = {
             gamerooms: this.props.game_list,
             joinedRoom: false,
-            current_game: null
+            current_game: null,
+            isForfeit: false,
+            forfeiter: ""
         };
     }
 
@@ -22,6 +24,10 @@ class Room extends React.Component {
         let socketio = this.props.socket;
         const joinedRoom = this.state.joinedRoom;
         const current_game = this.state.current_game;
+
+
+        const isForfeit = this.state.isForfeit;
+        const forfeiter = this.state.forfeiter;
 
         results.push(
             <div className="game_name" key={"game_name"}>
@@ -63,7 +69,9 @@ class Room extends React.Component {
 
             this.setState({
                 joinedRoom: true,
-                current_game: data.this_game
+                current_game: data.this_game,
+                isForfeit: data.isForfeit,
+                forfeiter: data.forfeiter
             })
         })
         
@@ -73,22 +81,47 @@ class Room extends React.Component {
             alert(data.message);
         });
 
+        socketio.removeAllListeners("leave_room_to_client");
+        socketio.on("leave_room_to_client", (data) => {
+        // when you leave all the board is cleared visually
+        // for(let i = 0; i < document.getElementsByClassName("square").length; i++){
+        //   document.getElementsByClassName("square")[i].style.backgroundColor = "white";
+        // }
+            this.setState({
+                gamerooms: data.game_list,
+                joinedRoom: false, 
+                isForfeit: data.isForfeit,
+                forfeiter: data.forfeiter
+            })
+        })
+
         if(joinedRoom){
             if(current_game.userlist.length == 2){
                 console.log("2 USERS ARE IN THE ROOM");
-               
+                
                 return (
                     <Game current_game={current_game} username={this.props.username} socket={socketio}/>
                 ) 
             }
             else{
-                // return (
-                //     <Game current_game={current_game} username={this.props.username} socket={socketio}/>
-                // )
-                
-                console.log("2 USERS NOT IN THE ROOM YET");
-            }
-            
+                console.log("forfeit state in ROOM is: "+isForfeit);
+                if(isForfeit == true){
+                    return (
+                        <div className="forfeit_game" key={"forfeit"}>
+                            <p>You are the Winner! {forfeiter} forfeited.</p>
+                            <button className="after_game_leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: current_game, user: this.props.username })}>Leave Game Room</button>
+                        </div> 
+                    )
+                }
+                else{
+                    return (
+                    <div className="before_game" key={"leaving"}>
+                        <p>Waiting for Other Player to Join ...</p>
+                        <button className="before_game_leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: current_game, user: this.props.username })}>Leave Game Room</button>
+                    </div> 
+                    );
+                }
+            }       
         }
 
         else{
