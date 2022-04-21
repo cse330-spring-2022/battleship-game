@@ -7,7 +7,8 @@ class Game extends React.Component {
     super(props);
     this.state = {
       gamerooms: this.props.game_list,
-      leftroom: false
+      leftroom: false,
+      start: false
     };
 
   }
@@ -19,6 +20,7 @@ class Game extends React.Component {
   render() {
     let socketio = this.props.socket;
     const leftroom = this.state.leftroom;
+    const start = this.state.start;
 
     socketio.removeAllListeners("leave_room_to_client");
     socketio.on("leave_room_to_client", (data) => {
@@ -33,12 +35,24 @@ class Game extends React.Component {
       })
     })
 
+    socketio.removeAllListeners("ready_to_client");
+    socketio.on("ready_to_client", (data) => {
+     console.log("START GAME");
+      this.setState({
+        start: true
+      })
+    });
+
     if(leftroom){
       return (
         <Room username={this.props.username} game_list={this.state.gamerooms} socket={socketio} />
       )
     }
     else{
+      
+      if(start){
+        console.log("the game started!!!");
+      }
 
       const results = [];
       

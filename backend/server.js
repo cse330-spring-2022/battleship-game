@@ -201,6 +201,7 @@ io.sockets.on("connection", function (socket) {
 
     socket.on('pick_to_server', function(data) {
 
+        
         let index_game = 0;
         let index_user = 0;
         let index_user_second = 0;
@@ -238,9 +239,10 @@ io.sockets.on("connection", function (socket) {
         console.log("this is the name of the user when picked: " + data["user"].name);
 
 
-        
-
-       
+        if(gamerooms[game_index].userlist[user_index].ships.length == max_ships){
+          //
+          return;
+        }
 
         // If the number of ships that the user has picked is less than 7, then add to the array
         if(gamerooms[game_index].userlist[user_index].ships.length < max_ships){
@@ -251,7 +253,14 @@ io.sockets.on("connection", function (socket) {
 
         if(gamerooms[game_index].userlist[user_index].ships.length == max_ships){
                     gamerooms[game_index].userlist[user_index].ready = true;
-                    isLimitReached = true; 
+                    isLimitReached = true;
+            if((gamerooms[game_index].userlist[0].ready == true) && (gamerooms[game_index].userlist[1].ready == true)){
+                
+                let msg = "Both players are ready";
+                console.log(msg);
+                io.sockets.to(`${data["this_game"].name}`).emit("ready_to_client", { message: msg });
+            }
+            
         }
 
         console.log("ready status of: " +  gamerooms[game_index].userlist[user_index].name + " is " + gamerooms[game_index].userlist[user_index].ready);
@@ -274,6 +283,7 @@ io.sockets.on("connection", function (socket) {
        
         console.log("the value of isLimitReached: " + isLimitReached);
 
+        
         // send out the updated list of the game and the list of gamerooms
         io.sockets.to(userId).emit("pick_to_client", { username: gamerooms[game_index].userlist[user_index], this_game: gamerooms[game_index], position: data["position"], status: isLimitReached });
 

@@ -19,18 +19,6 @@ class Square extends React.Component {
     socketio.emit("pick_to_server", { user: this.state.username, this_game: this.state.current_game, position: this.props.position}); 
   }
 
-  componentDidMount() {
-    console.log("ran");
-    if(this.state.username.ships.length == 7){
-      console.log("WE GOOOOOD");
-      this.setState({
-        isPicked: false,
-        pickedVal: ""
-
-      })
-    }
-  }
-
   render() {
 
     const isLabel = this.props.isLabel;
@@ -38,6 +26,7 @@ class Square extends React.Component {
     const isPicked = this.state.isPicked;
     const current_game = this.state.current_game;
     const username = this.state.username;
+ 
     
     socketio.removeAllListeners("pick_to_client");
     socketio.on("pick_to_client", (data) => {
@@ -82,21 +71,17 @@ class Square extends React.Component {
 
         })
       }
-      // console.log("this.props.username = " + this.props.username.name + " data.username = " + data.username.name);
-    
-       
-      // for(let i = 0; i < data.username.movelist.length; i++){
-      //   console.log(data.username.name + " picked: " + data.username.movelist[i]);
-      // }
     });
 
-    
-    
+ 
+   
     if(isLabel === "false"){ 
-      
+
       if((current_game.userlist[0].ready == true) && (current_game.userlist[1].ready == true)){
         console.log("this.props.current_game.userlist[0].ready = " + current_game.userlist[0].ready);
         console.log("this.props.current_game.userlist[1].ready = " + current_game.userlist[1].ready);
+
+        // socketio.emti
       }
 
       if(isPicked){ 
