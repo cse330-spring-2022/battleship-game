@@ -27,44 +27,22 @@ class Square extends React.Component {
     const current_game = this.state.current_game;
     const username = this.state.username;
  
+    console.log("WE ARE IN SQUARE AND ITS VALUE OF START IS: " + this.props.start);
     
     socketio.removeAllListeners("pick_to_client");
     socketio.on("pick_to_client", (data) => {
       console.log("position picked: " + data.position);
-
-      // if they haven't picked 7
-      //if(!data["status"]){
-        this.setState({
-          isPicked: true,
-          pickedVal: data.position,
-          current_game: data.this_game,
-          username: data.username
-        })
-      //}
-
-      // when it's ready
-      //else{
-      // if(data.username.ships.length == 7){
-      //   this.setState({
-      //     isPicked: false,
-      //     pickedVal: "",
-      //     current_game: data.this_game,
-      //     username: data.username
-      //   })  
-      // }
-
-      //console.log("this.props.username = " + this.props.username.name + " data.username = " + data.username.name);
-      
-      //data.username.movelist.push(data.position);
-      
-      
+      this.setState({
+        isPicked: true,
+        pickedVal: data.position,
+        current_game: data.this_game,
+        username: data.username
+      }) 
     });
 
     socketio.removeAllListeners("display_to_client");
-    
     socketio.on("display_to_client", (data) => {
-     //console.log("position picked: " + data.position);
-     if(!data["status"]){
+      if(!data["status"]){
         this.setState({
           isPicked: true,
           pickedVal: data.position
@@ -73,42 +51,38 @@ class Square extends React.Component {
       }
     });
 
- 
-   
     if(isLabel === "false"){ 
 
       if((current_game.userlist[0].ready == true) && (current_game.userlist[1].ready == true)){
         console.log("this.props.current_game.userlist[0].ready = " + current_game.userlist[0].ready);
         console.log("this.props.current_game.userlist[1].ready = " + current_game.userlist[1].ready);
-
-        // socketio.emti
       }
+
+      
+
+      // else{
+      //   console.log("we are in square and the game HAS NOT started");
+      // }
 
       if(isPicked){ 
         console.log("we picked something");
         console.log("pickedVAL: " + this.state.pickedVal);
-        document.getElementById(this.state.pickedVal).style.backgroundColor = "red"; 
+        document.getElementById(this.state.pickedVal).style.backgroundColor = "blue"; 
 
-        for(let i = 0; i < username.ships.length; i++){
-          console.log(username.name + " picked: " + username.ships[i]);
-        }
-
-        // if(username.ships.length == 7){
-        //  document.getElementById(this.state.pickedVal).style.backgroundColor = "gray"; 
-        //   //  this.setState({
-        //   //   isPicked: false,
-        //   //   pickedVal: ""
-        //   //  }}
-          
-
-        //   console.log("YO WE REACHED TH ELIMIT");
-        // }
+        // for(let i = 0; i < username.ships.length; i++){
+        //   console.log(username.name + " picked: " + username.ships[i]);
+        // }  
       }
-      // else{
-      //   console.log("when not picked in the else: " + this.props.position);
-      //   document.getElementById(this.props.position).style.backgroundColor = "white";
-      // }\
 
+      if(this.props.start){
+        console.log("we are in square and the game started");
+        return (
+          <button className="square" id={this.props.position} key={this.props.position} onClick={() => console.log("WE DID IT!!")}>
+            {this.props.value}
+          </button>
+        );
+      }
+     
       return (
         <button className="square" id={this.props.position} key={this.props.position} onClick={() => this.pick()}>
           {this.props.value}

@@ -49,12 +49,11 @@ class Game extends React.Component {
       )
     }
     else{
-      
-      if(start){
-        console.log("the game started!!!");
-      }
 
       const results = [];
+      
+      
+
       
       for(let i = 0; i < this.props.current_game.userlist.length; i++){
         results.push(
@@ -62,20 +61,40 @@ class Game extends React.Component {
         )
       }
 
-      results.push(
-        <div className="game" key={"game"}>
-              <button className="leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: this.props.current_game, user: this.props.username }) }>Leave Game</button>
-              <p>Select the positions of 7 ships by clicking 7 squares</p>
-              <div className="game-board">
-                <Board username={this.props.username} current_game={this.props.current_game} socket={socketio}/>
+      if(start){
+        console.log("the game started!!!");
+        results.push(
+          <div className="game" key={"game"}>
+                <button className="leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: this.props.current_game, user: this.props.username }) }>Leave Game</button>
+                <p>Select the positions of 7 ships by clicking 7 squares</p>
+                <div className="game-board">
+                  <Board username={this.props.username} current_game={this.props.current_game} socket={socketio} start={true}/>
+                </div>
+                <div className="game-info">
+                  <div>{/* status */}</div>
+                  <ol>{/* TODO */}</ol>
+                </div>
               </div>
-              <div className="game-info">
-                <div>{/* status */}</div>
-                <ol>{/* TODO */}</ol>
-              </div>
-            </div>
+        )
+      }
 
-      )
+      // start is false
+      else{
+        results.push(
+          <div className="game" key={"game"}>
+                <button className="leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: this.props.current_game, user: this.props.username }) }>Leave Game</button>
+                <p>Select the positions of 7 ships by clicking 7 squares</p>
+                <div className="game-board">
+                  <Board username={this.props.username} current_game={this.props.current_game} socket={socketio} start={false}/>
+                </div>
+                <div className="game-info">
+                  <div>{/* status */}</div>
+                  <ol>{/* TODO */}</ol>
+                </div>
+              </div>
+
+        )
+      }
       
 
       return results;

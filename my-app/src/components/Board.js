@@ -10,9 +10,10 @@ class Board extends React.Component {
   }
 
   renderSquare(label, position) {
+    console.log("WE ARE IUN BOARD AND THE VALUE OF START IS: " + this.props.start);
     return <Square username={this.props.username} isLabel="false" value={label} 
                    position={position} current_game={this.props.current_game} 
-                   socket={this.props.socket}/>;
+                   socket={this.props.socket} start={this.props.start}/>;
   }
 
   renderLabel(label) {
