@@ -16,7 +16,6 @@ class Scoreboard extends React.Component {
         const own_score = this.state.own_score; 
         const opp_score = this.state.opp_score;
 
-        //socketio.removeAllListeners("hit_to_client");
         socketio.on("hit_to_client", (data) => {
             console.log("hey i got this!!");
             this.setState({
@@ -26,7 +25,6 @@ class Scoreboard extends React.Component {
             console.log(data.username.name + "'s own score is: " + data.username.score);
         });
 
-        //socketio.removeAllListeners("sub_to_client");
         socketio.on("sub_to_client", (data) => {
             this.setState({
                 opp_score: data.username.score
@@ -45,7 +43,6 @@ class Scoreboard extends React.Component {
         else{
             return;
         }
-
     }
 }
 

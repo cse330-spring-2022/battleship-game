@@ -2,7 +2,7 @@ import React from 'react';
 import Board from './Board';
 import Room from './Room';
 import Scoreboard from './Scoreboard';
-import { score } from './Square';
+
 class Game extends React.Component {
   
   constructor(props) {
@@ -12,14 +12,14 @@ class Game extends React.Component {
       leftroom: false,
       start: false
     };
-
   }
 
   render() {
     let socketio = this.props.socket;
     const leftroom = this.state.leftroom;
     const start = this.state.start;
-
+  
+    // Executes when someone leaves a room
     socketio.removeAllListeners("leave_room_to_client");
     socketio.on("leave_room_to_client", (data) => {
 
@@ -29,6 +29,7 @@ class Game extends React.Component {
       })
     })
 
+    // Executes when both players are ready to begin the game
     socketio.removeAllListeners("ready_to_client");
     socketio.on("ready_to_client", (data) => {
      console.log("START GAME");
@@ -37,13 +38,14 @@ class Game extends React.Component {
       })
     });
 
+    // If a user left the room, then display the list of rooms
     if(leftroom){
       return (
         <Room username={this.props.username} game_list={this.state.gamerooms} socket={socketio} />
       )
     }
-    else{
 
+    else{
       const results = [];
       
       for(let i = 0; i < this.props.current_game.userlist.length; i++){
@@ -52,6 +54,7 @@ class Game extends React.Component {
         )
       }
 
+      // If the game has started, then display the game and scoreboard
       if(start){
         results.push(
           <div className="game" key={"game"}>
@@ -61,14 +64,11 @@ class Game extends React.Component {
                 <div className="game-board">
                   <Board username={this.props.username} current_game={this.props.current_game} socket={socketio} start={true}/>
                 </div>
-                <div className="game-info">
-                  <div>{/* status */}</div>
-                </div>
-              </div>
+          </div>
         )
       }
 
-      // start is false
+      // Otherwise prompt the user to pick their ships
       else{
         results.push(
           <div className="game" key={"game"}>
@@ -78,18 +78,12 @@ class Game extends React.Component {
                 <div className="game-board">
                   <Board username={this.props.username} current_game={this.props.current_game} socket={socketio} start={false}/>
                 </div>
-                <div className="game-info">
-                  <div></div>
-                </div>
-              </div>
-
+          </div>
         )
       }
-      
 
       return results;
-    }
-    
+    }   
   }
 }
 

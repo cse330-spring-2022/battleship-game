@@ -24,32 +24,32 @@ class Square extends React.Component {
     this.attack = this.attack.bind(this);
   }
 
+  // Picks a user's ship at the beginning
   pick(){ 
     let socketio = this.props.socket;
 
+    // Emits a signal to the backend to pick a ship at a location
     socketio.emit("pick_to_server", { user: this.state.username, this_game: this.state.current_game, position: this.props.position})
   }
 
+  // Attacks another user's ship
   attack(){
     let socketio = this.props.socket;
-    //let user_index;
     let victim_index;
 
+    // Caluclates the index of the victim
     if(this.state.current_game.userlist[0].name == this.state.username.name){
-      // user_index = 0;
       victim_index = 1;
     }
     else{
-      //user_index = 1;
       victim_index = 0;
     }
     
+    // Emits a signal to the backend to attack a server
     socketio.emit("attack_to_server", { user: this.state.username, victim_index: victim_index, this_game: this.state.current_game, position: this.props.position});
-    
   }
 
   render() {
-
     const isLabel = this.props.isLabel;
     let socketio = this.props.socket;
     const isPicked = this.state.isPicked;
@@ -60,6 +60,7 @@ class Square extends React.Component {
     const isClicked = this.state.isClicked;
     const username = this.state.username;
     
+    // This is executes when a user picks the location for their ship
     socketio.removeAllListeners("pick_to_client");
     socketio.on("pick_to_client", (data) => {
       let pi = this.state.isPicked;
@@ -74,7 +75,7 @@ class Square extends React.Component {
       console.log("changed " + pi);
     });
 
-    //socketio.removeAllListeners("hit_to_client");
+    // This is executes when a succesful hit is detected
     socketio.on("hit_to_client", (data) => {
       this.setState({
         isClicked: true,
@@ -83,11 +84,9 @@ class Square extends React.Component {
         current_game: data.this_game,
         username: data.username
       }) 
-
-      console.log(data.username.name + " has a score of: " + data.username.score);
-      //score = data.username.score;
     });
 
+    // This is executes when a miss is detected
     socketio.removeAllListeners("miss_to_client");
     socketio.on("miss_to_client", (data) => {
       this.setState({
@@ -99,8 +98,7 @@ class Square extends React.Component {
       }) 
     })
 
-    // duisplay for the actual victim that their ship is lost
-    //socketio.removeAllListeners("sub_to_client");
+    // This is displays what the victim gets on their screen
     socketio.on("sub_to_client", (data) => {
       this.setState({
         isClicked: true,
@@ -110,11 +108,8 @@ class Square extends React.Component {
       }) 
     })
 
-    //   console.log(data.username.name + " has a score of: " + data.username.score);
-    // });
-
+    // Determine if the current square is a label
     if(isLabel === "false"){ 
-
       if(isPicked){ 
         document.getElementById(this.state.pickedVal).style.backgroundColor = "blue"; 
       }
@@ -131,7 +126,7 @@ class Square extends React.Component {
         document.getElementById(this.state.subVal).style.backgroundColor = "gray"; 
       }
 
-
+      // When the game starts, it allows you to attack
       if(this.props.start){
         return (
           <button className="square" id={this.props.position} key={this.props.position} onClick={() => this.attack()}>
@@ -139,8 +134,9 @@ class Square extends React.Component {
           </button>
         );
       }
-      else{
 
+      // Otherwise, allow the user to pick a ship
+      else{
         return (
           <button className="square" id={this.props.position} key={this.props.position} onClick={() => this.pick()}>
             {this.props.value}
@@ -149,6 +145,7 @@ class Square extends React.Component {
       }
     }
     
+    // If is a lable then display a label
     else {
       return (   
         <div className="label" key={this.props.position + "_label"}>
@@ -156,7 +153,6 @@ class Square extends React.Component {
         </div>
       );
     }
-
   }
 }
 export default Square;

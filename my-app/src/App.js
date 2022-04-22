@@ -19,8 +19,8 @@ class App extends React.Component {
     this.login = this.login.bind(this);
   }
 
+  // Log's in a user with a given name by performing a fetch call with post
   login(name) {
-
     const data = { 'username': name }
 
     fetch("http://localhost:3001/login", {
@@ -48,18 +48,16 @@ class App extends React.Component {
   }
 
   render() {
-    console.log("render")
     const isLoggedOn = this.state.isLoggedOn;
 
+    // If logged on then connect to socket
     if (isLoggedOn) {
       let socketio = io.connect();
-      console.log("we are testing here")
-
       return (
         <Room username={this.state.username} game_list={this.state.gamerooms} socket={socketio} />
       );
     }
-
+    
     else {
       return (
         <div className="App">

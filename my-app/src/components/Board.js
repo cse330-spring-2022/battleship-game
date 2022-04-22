@@ -1,6 +1,7 @@
 import React from 'react';
 import Square from './Square';
 
+
 class Board extends React.Component {
   constructor(props) {
     super(props);
@@ -19,12 +20,14 @@ class Board extends React.Component {
     return <Square isLabel="true" value={label} socket={this.props.socket}/>;
   }
 
+  // Renders the board as a grid with multiple 
+  // Inspiration on how to do this was gotten from this website (the react manual):
+  // https://reactjs.org/tutorial/tutorial.html
+
   render() {
-    
     const results = [];
     const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
-    //const numbers = ["1", "2", "3", "4", "5", "6", ]
-    //creating row 1
+
     results.push(
       <div className="board-row" key={"board_label"}>
             {this.renderLabel(" ")}
@@ -61,7 +64,6 @@ class Board extends React.Component {
     }
 
     return results;
-    
   }
 }
 

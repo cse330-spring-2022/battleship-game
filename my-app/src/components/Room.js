@@ -14,8 +14,6 @@ class Room extends React.Component {
         };
     }
 
-    
-
     render() {
 
         console.log("this is the username we want: " + this.props.username.name);
@@ -59,14 +57,6 @@ class Room extends React.Component {
         
         socketio.removeAllListeners("join_room_to_client");
         socketio.on("join_room_to_client", (data) => {
-
-            // // when you leave all the board is cleared visually
-            // for(let i = 0; i < document.getElementsByClassName("square").length; i++){
-            //     document.getElementsByClassName("square")[i].style.backgroundColor = "white";
-            // }
-
-            //console.log("this user: " + data.username.name + " joined this chat: " + data.this_game.name);
-
             this.setState({
                 joinedRoom: true,
                 current_game: data.this_game,
@@ -83,10 +73,6 @@ class Room extends React.Component {
 
         socketio.removeAllListeners("leave_room_to_client");
         socketio.on("leave_room_to_client", (data) => {
-        // when you leave all the board is cleared visually
-        // for(let i = 0; i < document.getElementsByClassName("square").length; i++){
-        //   document.getElementsByClassName("square")[i].style.backgroundColor = "white";
-        // }
             this.setState({
                 gamerooms: data.game_list,
                 joinedRoom: false, 
@@ -98,10 +84,10 @@ class Room extends React.Component {
         if(joinedRoom){
             if(current_game.userlist.length == 2){
                 console.log("2 USERS ARE IN THE ROOM");
-                
                 return (
                     <Game current_game={current_game} username={this.props.username} socket={socketio}/>
                 ) 
+                
             }
             else{
                 console.log("forfeit state in ROOM is: "+isForfeit);
