@@ -174,7 +174,8 @@ io.sockets.on("connection", function (socket) {
              // When a user joins a room they are not in a game
             socket.leave("not_in_a_game");
             gamerooms[final].userlist.push(data["user"]);
-            io.sockets.to(data["this_game"].name).emit("join_room_to_client", { this_game: gamerooms[final], game_list: gamerooms, username: data["user"]});
+            io.sockets.to(data["this_game"].name).emit("join_room_to_client", { this_game: gamerooms[final], 
+                game_list: gamerooms, username: data["user"]});
         }
         else{
             let msg = "The limit for users in a game has already been met";
@@ -238,7 +239,8 @@ io.sockets.on("connection", function (socket) {
         socket.leave(`${data["this_game"].name}`);
 
         // People still in the game would rejoin as if nothing ahnges
-        io.sockets.to(`${data["this_game"].name}`).emit("join_room_to_client", { this_game: gamerooms[game_index], game_list: gamerooms, isForfeit: forfeit, forfeiter: data["user"].name }); // broadcast the message to other users
+        io.sockets.to(`${data["this_game"].name}`).emit("join_room_to_client", { this_game: gamerooms[game_index], 
+            game_list: gamerooms, isForfeit: forfeit, forfeiter: data["user"].name }); // broadcast the message to other users
 
         // the specific user has to leave
         io.sockets.to(userId).emit("leave_room_to_client", { game_list: gamerooms, isForfeit: forfeit, forfeiter: data["user"].name }); // broadcast the message to other users
@@ -313,10 +315,10 @@ io.sockets.on("connection", function (socket) {
 
         
         // send out the updated list of the game and the list of gamerooms
-        io.sockets.to(userId).emit("pick_to_client", { username: gamerooms[game_index].userlist[user_index], this_game: gamerooms[game_index], position: data["position"], status: isLimitReached });
+        io.sockets.to(userId).emit("pick_to_client", { username: gamerooms[game_index].userlist[user_index], 
+            this_game: gamerooms[game_index], position: data["position"], status: isLimitReached });
 
-       // io.sockets.to(userId).emit("display_to_client", { username: gamerooms[game_index].userlist[user_index], this_game: gamerooms[game_index], position: data["position"], status: isLimitReached });
-
+    
     });
 
     socket.on('attack_to_server', function(data) {
@@ -359,23 +361,24 @@ io.sockets.on("connection", function (socket) {
             if(gamerooms[game_index].userlist[victim_index].ships[i] == data["position"]){
                 gamerooms[game_index].userlist[user_index].score++;
 
-               // gamerooms[game_index].userlist[victim_index].ships[i]
-
                 gamerooms[game_index].userlist[victim_index].ships.splice(i, 1); // remove number using index
                 
                 let victimId = gamerooms[game_index].userlist[victim_index].socket;
 
-                io.sockets.to(userId).emit("hit_to_client", { username: gamerooms[game_index].userlist[user_index], this_game: gamerooms[game_index], position: data["position"]});
-                io.sockets.to(victimId).emit("sub_to_client", { username: gamerooms[game_index].userlist[user_index], this_game: gamerooms[game_index], position: data["position"]});
+                io.sockets.to(userId).emit("hit_to_client", { username: gamerooms[game_index].userlist[user_index], 
+                    this_game: gamerooms[game_index], position: data["position"]});
+                io.sockets.to(victimId).emit("sub_to_client", { username: gamerooms[game_index].userlist[user_index], 
+                    this_game: gamerooms[game_index], position: data["position"]});
                 return;
             }
         }
 
         
         // send out the updated list of the game and the list of gamerooms
-        io.sockets.to(`${data["this_game"].name}`).emit("miss_to_client", { username: gamerooms[game_index].userlist[user_index], this_game: gamerooms[game_index], position: data["position"]});
+        io.sockets.to(`${data["this_game"].name}`).emit("miss_to_client", { username: gamerooms[game_index].userlist[user_index], 
+            this_game: gamerooms[game_index], position: data["position"]});
 
-       // io.sockets.to(userId).emit("display_to_client", { username: gamerooms[game_index].userlist[user_index], this_game: gamerooms[game_index], position: data["position"], status: isLimitReached });
+     
 
     });
 
