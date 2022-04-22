@@ -1,4 +1,6 @@
 import React from 'react';
+let score = 7;
+
 class Square extends React.Component {
 
   constructor(props) { 
@@ -14,7 +16,8 @@ class Square extends React.Component {
       subVal: "",
       hitVal: "",
       missVal: "",
-      pickedVal: ""
+      pickedVal: "",
+      isClicked: false
     } 
 
     this.pick = this.pick.bind(this);
@@ -23,7 +26,8 @@ class Square extends React.Component {
 
   pick(){ 
     let socketio = this.props.socket;
-    socketio.emit("pick_to_server", { user: this.state.username, this_game: this.state.current_game, position: this.props.position}); 
+
+    socketio.emit("pick_to_server", { user: this.state.username, this_game: this.state.current_game, position: this.props.position})
   }
 
   attack(){
@@ -39,8 +43,9 @@ class Square extends React.Component {
       //user_index = 1;
       victim_index = 0;
     }
-
-    socketio.emit("attack_to_server", { user: this.state.username, victim_index: victim_index, this_game: this.state.current_game, position: this.props.position}); 
+    
+    socketio.emit("attack_to_server", { user: this.state.username, victim_index: victim_index, this_game: this.state.current_game, position: this.props.position});
+    
   }
 
   render() {
@@ -52,22 +57,27 @@ class Square extends React.Component {
     const isHit = this.state.isHit;
     const isMiss = this.state.isMiss;
     const isSub = this.state.isSub;
+    const isClicked = this.state.isClicked;
     const username = this.state.username;
     
     socketio.removeAllListeners("pick_to_client");
     socketio.on("pick_to_client", (data) => {
+      let pi = this.state.isPicked;
       console.log("position picked: " + data.position);
+      console.log("is picked " + pi);
       this.setState({
         isPicked: true,
         pickedVal: data.position,
         current_game: data.this_game,
         username: data.username
       }) 
+      console.log("changed " + pi);
     });
 
-    socketio.removeAllListeners("hit_to_client");
+    //socketio.removeAllListeners("hit_to_client");
     socketio.on("hit_to_client", (data) => {
       this.setState({
+        isClicked: true,
         isHit: true,
         hitVal: data.position,
         current_game: data.this_game,
@@ -75,11 +85,13 @@ class Square extends React.Component {
       }) 
 
       console.log(data.username.name + " has a score of: " + data.username.score);
+      //score = data.username.score;
     });
 
     socketio.removeAllListeners("miss_to_client");
     socketio.on("miss_to_client", (data) => {
       this.setState({
+        isClicked: true,
         isMiss: true,
         missVal: data.position,
         current_game: data.this_game,
@@ -88,13 +100,13 @@ class Square extends React.Component {
     })
 
     // duisplay for the actual victim that their ship is lost
-    socketio.removeAllListeners("sub_to_client");
+    //socketio.removeAllListeners("sub_to_client");
     socketio.on("sub_to_client", (data) => {
       this.setState({
+        isClicked: true,
         isSub: true,
         subVal: data.position,
         current_game: data.this_game,
-        username: data.username
       }) 
     })
 
@@ -105,7 +117,6 @@ class Square extends React.Component {
 
       if(isPicked){ 
         document.getElementById(this.state.pickedVal).style.backgroundColor = "blue"; 
-
       }
 
       if(isHit){ 
@@ -128,12 +139,14 @@ class Square extends React.Component {
           </button>
         );
       }
-     
-      return (
-        <button className="square" id={this.props.position} key={this.props.position} onClick={() => this.pick()}>
-          {this.props.value}
-        </button>
-      );
+      else{
+
+        return (
+          <button className="square" id={this.props.position} key={this.props.position} onClick={() => this.pick()}>
+            {this.props.value}
+          </button>
+        );
+      }
     }
     
     else {
@@ -147,3 +160,4 @@ class Square extends React.Component {
   }
 }
 export default Square;
+export { score };

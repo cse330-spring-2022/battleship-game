@@ -1,6 +1,8 @@
 import React from 'react';
 import Board from './Board';
 import Room from './Room';
+import Scoreboard from './Scoreboard';
+import { score } from './Square';
 class Game extends React.Component {
   
   constructor(props) {
@@ -13,10 +15,6 @@ class Game extends React.Component {
 
   }
 
-  
-    
-  
-
   render() {
     let socketio = this.props.socket;
     const leftroom = this.state.leftroom;
@@ -24,10 +22,6 @@ class Game extends React.Component {
 
     socketio.removeAllListeners("leave_room_to_client");
     socketio.on("leave_room_to_client", (data) => {
-      // when you leave all the board is cleared visually
-      // for(let i = 0; i < document.getElementsByClassName("square").length; i++){
-      //   document.getElementsByClassName("square")[i].style.backgroundColor = "white";
-      // }
 
       this.setState({
         gamerooms: data.game_list,
@@ -52,9 +46,6 @@ class Game extends React.Component {
 
       const results = [];
       
-      
-
-      
       for(let i = 0; i < this.props.current_game.userlist.length; i++){
         results.push(
           <div key={this.props.current_game.userlist[i].name}>{this.props.current_game.userlist[i].name}</div>
@@ -62,17 +53,16 @@ class Game extends React.Component {
       }
 
       if(start){
-        console.log("the game started!!!");
         results.push(
           <div className="game" key={"game"}>
                 <button className="leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: this.props.current_game, user: this.props.username }) }>Leave Game</button>
-                <p>Select the positions of 7 ships by clicking 7 squares</p>
+                <p>The game has started!</p>
+                <Scoreboard start={true} socket={socketio}/>
                 <div className="game-board">
                   <Board username={this.props.username} current_game={this.props.current_game} socket={socketio} start={true}/>
                 </div>
                 <div className="game-info">
                   <div>{/* status */}</div>
-                  <ol>{/* TODO */}</ol>
                 </div>
               </div>
         )
@@ -83,13 +73,13 @@ class Game extends React.Component {
         results.push(
           <div className="game" key={"game"}>
                 <button className="leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: this.props.current_game, user: this.props.username }) }>Leave Game</button>
-                <p>Select the positions of 7 ships by clicking 7 squares</p>
+                <p>Select the positions of 7 ships by clicking 7 squares. Your opponent is getting ready.</p>
+                <Scoreboard start={false} socket={socketio}/>
                 <div className="game-board">
                   <Board username={this.props.username} current_game={this.props.current_game} socket={socketio} start={false}/>
                 </div>
                 <div className="game-info">
-                  <div>{/* status */}</div>
-                  <ol>{/* TODO */}</ol>
+                  <div></div>
                 </div>
               </div>
 
