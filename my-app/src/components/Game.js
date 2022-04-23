@@ -22,20 +22,27 @@ class Game extends React.Component {
   }
 
   tick(){
-    this.setState({
-      date: new Date()
-    });
+    if(this.state.hasWon == false){
+      this.setState({
+        date: new Date()
+      });
+    }
+    
   }
 
   componentDidMount() {
-    this.timerID = setInterval(
-      () => this.tick(),
-      1000
-    );
+    if(this.state.hasWon == false){
+      this.timerID = setInterval(
+        () => this.tick(),
+        1000
+      );
+    }
   }
 
   componentWillUnmount() {
-    clearInterval(this.timerID);
+    if(this.state.hasWon == false){
+      clearInterval(this.timerID);
+    }
   }
 
   render() {
@@ -80,6 +87,7 @@ class Game extends React.Component {
 
     if(hasWon){
       alert(this.state.winner + " won the game!")
+      console.log("slskskskks")
       return (
         <Room username={this.props.username} game_list={this.state.gamerooms} socket={socketio} />
       )

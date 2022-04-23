@@ -53,6 +53,12 @@ app.post('/login', (req, res) => {
 
     let user = req.body.username;
 
+    if(user == ""){
+        let msg = "User can't be blank!";
+        res.json({ message: msg });
+        return;
+    }
+
     //console.log("THIS IS THE USERNAME " + user);
     let new_user = new User(user);
     //current_user = new_user;
@@ -81,7 +87,16 @@ io.sockets.on("connection", function (socket) {
     // When it gets this message, it inserts a new room to the added to the gameroom
     socket.on('insert_room_to_server', function (data) {
         //socket.join("not_in_a_game");
+
+
+        if(data["game_name"] == ""){
+            let msg = "Game Room can't be blank!";
+            io.sockets.to(userId).emit("error_to_client", { message: msg });
+            return;
+        }
+
         console.log("insert room of: " + data["user"].name + " with the name: " + data["game_name"]);
+
         //Creates a game room
         let default_gameroom = new Gameroom(data["user"], data["game_name"]);
 
@@ -98,7 +113,7 @@ io.sockets.on("connection", function (socket) {
 
         // If the chatroom exists, then alert the user
         if(match){
-            let msg = "Gameroom with that name already exists!";
+            let msg = "Game Room with that name already exists!";
             io.sockets.to(userId).emit("error_to_client", { message: msg });
         }
         else{
