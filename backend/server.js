@@ -68,8 +68,6 @@ app.post('/login', (req, res) => {
         let msg = "User already exists!";
         res.json({ message: msg });
     }
-
-    
 })
 
 io.sockets.on("connection", function (socket) {
@@ -117,8 +115,6 @@ io.sockets.on("connection", function (socket) {
        
         socket.join(`${data["this_game"].name}`);
 
-        //data["user"].socket = userId;
-
         // Calculating the final index to use to find the specific game
         let index = 0;
         let final = -1;
@@ -131,43 +127,10 @@ io.sockets.on("connection", function (socket) {
             index++;
         })
       
-        // let index_game = 0;
-        // let index_user = 0;
-        // let index_user_second = 0;
-
-        // let game_index = -1;
-        // let user_index = -1;
-
-        // //Gets the index of the game that we want to delete the user from
-        // gamerooms.forEach(function(game){
-        //     if(game.name == data["this_game"].name){
-        //         game_index = index_game;
-        //         return;
-        //     }
-        //     index_game++;
-        // })
-
-        // //Gets the index of the user we wnat to delete for the userlist in the specific chatroom
-        // gamerooms.forEach(function(game){
-        //     if(game.name == data["this_game"].name){
-        //         game.userlist.forEach(function(user){
-        //             if(user.name == data["user"].name){
-        //                 user_index = index_user_second;
-        //                 return;
-        //             }
-        //             index_user_second++;
-        //         })     
-        //     }
-        //     index_user++;
-        // })
-
-        // console.log("this is the game index " + game_index);
-        // console.log("this is the user index " + user_index);
-
         //  Clears the shiplist
         data["user"].ships = [];
         data["user"].socket = userId;
-//
+
 
         // If it's not currently in the user list then add it
         if(!gamerooms[final].userlist.includes(data["user"]) && gamerooms[final].userlist.length < 2){
@@ -235,6 +198,9 @@ io.sockets.on("connection", function (socket) {
         // //  Clears the shiplist
         // gamerooms[game_index].userlist[user_index].ships = [];
 
+        // if(gamerooms[game_index].userlist.length == 0 && data["hasWon"] == true){
+        //     gamerooms.splice(game_index, 1);
+        // }
 
         socket.leave(`${data["this_game"].name}`);
 
@@ -330,6 +296,9 @@ io.sockets.on("connection", function (socket) {
         let game_index = -1;
         let user_index = -1;
 
+        let winner = "";
+        let hasWon = false;
+
         //Gets the index of the game that we want to delete the user from
         gamerooms.forEach(function(game){
             if(game.name == data["this_game"].name){
@@ -359,7 +328,15 @@ io.sockets.on("connection", function (socket) {
 
         for(let i = 0; i < gamerooms[game_index].userlist[victim_index].ships.length; i++){
             if(gamerooms[game_index].userlist[victim_index].ships[i] == data["position"]){
+
                 gamerooms[game_index].userlist[user_index].score++;
+                if(gamerooms[game_index].userlist[user_index].score == 7){
+                   
+                    winner = gamerooms[game_index].userlist[user_index].name;
+                    hasWon = true;
+
+                    console.log("WE HAVE A WINNER: " + winner);
+                }
 
                 gamerooms[game_index].userlist[victim_index].ships.splice(i, 1); // remove number using index
                 
@@ -369,6 +346,11 @@ io.sockets.on("connection", function (socket) {
                     this_game: gamerooms[game_index], position: data["position"]});
                 io.sockets.to(victimId).emit("sub_to_client", { username: gamerooms[game_index].userlist[user_index], 
                     this_game: gamerooms[game_index], position: data["position"]});
+
+                if(hasWon){
+                    io.sockets.to(`${data["this_game"].name}`).emit("win_to_client", { winner: winner });
+                }
+
                 return;
             }
         }
