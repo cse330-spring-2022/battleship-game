@@ -14,8 +14,28 @@ class Game extends React.Component {
       leaveAll: false,
       hasWon: false,
       winner: "",
-      justWon: false
+      justWon: false,
+      date: new Date()
     };
+
+    this.tick = this.tick.bind(this);
+  }
+
+  tick(){
+    this.setState({
+      date: new Date()
+    });
+  }
+
+  componentDidMount() {
+    this.timerID = setInterval(
+      () => this.tick(),
+      1000
+    );
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID);
   }
 
   render() {
@@ -85,6 +105,7 @@ class Game extends React.Component {
       if(start){
         results.push(
           <div className="game" key={"game"}>
+                <p>Time: {this.state.date.toLocaleTimeString()}</p>
                 <button className="leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: this.props.current_game, user: this.props.username }) }>Leave Game</button>
                 <p>The game has started!</p>
                 <Scoreboard start={true} socket={socketio}/>
@@ -99,6 +120,7 @@ class Game extends React.Component {
       else{
         results.push(
           <div className="game" key={"game"}>
+                <p></p>
                 <button className="leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: this.props.current_game, user: this.props.username }) }>Leave Game</button>
                 <p>Select the positions of 7 ships by clicking 7 squares. Your opponent is getting ready.</p>
                 <Scoreboard start={false} socket={socketio}/>
