@@ -2,10 +2,58 @@ button.square {
     width: 4vw;
     height: 3.99vw;
     border-radius: 0px;
-    border: 1px solid black;
+    border: 1px solid #020270;
     padding: 0;
     display: flex;
     cursor: pointer;
+    background-color: white;
+    transition: 0.3s;
+}
+
+button.square:hover{
+    border: 1px solid white;
+    height: 4.99vw;
+    background-color: rgb(0, 106, 255); 
+    opacity: 1;
+    
+}
+
+.board-row:hover button.square:not(:hover) {
+    /* background-color: red; */
+    height: 3.88vw;
+}
+
+div#root {
+    display: flex;
+    margin: 6vw;
+    justify-content: center;
+    color: #020270;
+    font-size: 2vw;
+}
+
+#time{
+    margin: 0;
+}
+
+.scoreboard{
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.5vw;
+}
+
+div#userlist {
+    padding: 2vw;
+    background-color: #cbe5ff;
+    height: 46vw;
+    margin-top: 6.6vw;
+    width: 19vw;
+    border-radius: 1vw;
+    position: relative;
+}
+
+.users {
+    margin-top: 0.8vw;
+    font-size: 1.7vw;
 }
 
 .game-board{
@@ -16,4 +64,32 @@ button.square {
 
 .label {
     height: 4vw;
+}
+
+.game {
+    margin-left: 5vw;
+}
+
+p.ready {
+    width: 50vw;
+}
+
+.container {
+    width: 44vw;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 4vw;
+    padding-left: 2vw;
+    padding-top: 2vw;
+    background-color: #cbe5ff;
+    border-radius: 1vw;
+    font-size: 2vw;
+    text-align: center;
+    color: #020270;
+}
+
+p.label_val {
+    margin: 0;
+    position: relative;
+    top: 0.56vw;
 }

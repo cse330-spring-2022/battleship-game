@@ -102,23 +102,38 @@ class Game extends React.Component {
 
     else{
       const results = [];
-      
+      const users = [];
+
       for(let i = 0; i < this.props.current_game.userlist.length; i++){
-        results.push(
-          <div key={this.props.current_game.userlist[i].name}>{this.props.current_game.userlist[i].name}</div>
+        users.push(
+          <div className="users" key={this.props.current_game.userlist[i].name}>{this.props.current_game.userlist[i].name}</div>
         )
       }
 
+      
+    
       // If the game has started, then display the game and scoreboard
       if(start){
         results.push(
+          <div id="game-info" key={"game_info"}>
+            <div>
+              <p id="time">Time: {this.state.date.toLocaleTimeString()}</p>
+              <button className="leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: this.props.current_game, user: this.props.username }) }>Leave Game</button>
+            </div>
+            <div id="userlist" key={"userlist"}>
+              User List:
+              {users}
+            </div>
+          </div>
+        )
+        results.push(
           <div className="game" key={"game"}>
-                <p>Time: {this.state.date.toLocaleTimeString()}</p>
-                <button className="leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: this.props.current_game, user: this.props.username }) }>Leave Game</button>
                 <p>The game has started!</p>
                 <Scoreboard start={true} socket={socketio}/>
-                <div className="game-board">
-                  <Board username={this.props.username} current_game={this.props.current_game} socket={socketio} start={true}/>
+                <div className="container">
+                  <div className="game-board">
+                    <Board username={this.props.username} current_game={this.props.current_game} socket={socketio} start={true}/>
+                  </div>
                 </div>
           </div>
         )
@@ -127,14 +142,27 @@ class Game extends React.Component {
       // Otherwise prompt the user to pick their ships
       else{
         results.push(
+          <div id="game-info" key={"game_info"}>
+            <div>
+              <p id="time"></p>
+              <button className="leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: this.props.current_game, user: this.props.username }) }>Leave Game</button>
+            </div>
+            <div id="userlist" key={"userlist"}>
+              User List:
+              {users}
+            </div>
+          </div>
+        )
+        results.push(
           <div className="game" key={"game"}>
-                <p></p>
-                <button className="leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: this.props.current_game, user: this.props.username }) }>Leave Game</button>
-                <p>Select the positions of 7 ships by clicking 7 squares. Your opponent is getting ready.</p>
+                <p className="ready">Select the positions of 7 ships by clicking 7 squares. Your opponent is getting ready.</p>
                 <Scoreboard start={false} socket={socketio}/>
-                <div className="game-board">
-                  <Board username={this.props.username} current_game={this.props.current_game} socket={socketio} start={false}/>
+                <div className="container">
+                  <div className="game-board">
+                    <Board username={this.props.username} current_game={this.props.current_game} socket={socketio} start={false}/>
+                  </div>
                 </div>
+                
           </div>
         )
       }

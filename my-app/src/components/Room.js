@@ -26,9 +26,9 @@ class Room extends React.Component {
         const isForfeit = this.state.isForfeit;
         const forfeiter = this.state.forfeiter;
 
-        
+        const menu = [];
 
-        results.push(
+        menu.push(
             <div className="game_name" key={"game_name"}>
                 <label className="labels">Gameroom name: </label>
                 <input type="text" placeholder="Type in a name for a chatroom..." id="room_input" />
@@ -38,6 +38,23 @@ class Room extends React.Component {
             </div>
         );
 
+        if (this.state.gamerooms.length > 0) {
+            for (let i = 0; i < this.state.gamerooms.length; i++) {
+                menu.push(
+                    <div className="rooms" key={i}>
+                        <p className="room_title">{this.state.gamerooms[i].name}</p>
+                        <button className="room_button" onClick={() => socketio.emit("join_room_to_server", { this_game: this.state.gamerooms[i], user: this.props.username })}>Join Game Room</button>
+                    </div>
+                );
+            }
+        }
+        
+        results.push(
+            <div id="menu" key={menu}>
+                {menu}
+            </div>
+        )
+
         socketio.removeAllListeners("insert_room_to_client");
         socketio.on("insert_room_to_client", (data) => {
             this.setState({
@@ -46,16 +63,7 @@ class Room extends React.Component {
         }) 
 
         
-        if (this.state.gamerooms.length > 0) {
-            for (let i = 0; i < this.state.gamerooms.length; i++) {
-                results.push(
-                    <div className="rooms" key={i}>
-                        <p className="room_title">{this.state.gamerooms[i].name}</p>
-                        <button className="room_button" onClick={() => socketio.emit("join_room_to_server", { this_game: this.state.gamerooms[i], user: this.props.username })}>Join Game Room</button>
-                    </div>
-                );
-            }
-        }
+       
         
         socketio.removeAllListeners("join_room_to_client");
         socketio.on("join_room_to_client", (data) => {

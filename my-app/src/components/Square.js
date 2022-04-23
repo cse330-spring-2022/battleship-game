@@ -149,7 +149,9 @@ class Square extends React.Component {
     else {
       return (   
         <div className="label" key={this.props.position + "_label"}>
-          {this.props.value}
+          <p className='label_val'>
+            {this.props.value}
+          </p>
         </div>
       );
     }

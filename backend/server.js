@@ -45,9 +45,6 @@ let gamerooms = [];
 // The array of allowed users
 let allowed_users = [];
 
-//let current_user;
-
-
 //TODO: FIGURE OUT SENDING DATA WITH REQ AND REQ STUFF
 app.post('/login', (req, res) => {
 
