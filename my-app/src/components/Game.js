@@ -10,14 +10,22 @@ class Game extends React.Component {
     this.state = {
       gamerooms: this.props.game_list,
       leftroom: false,
-      start: false
+      start: false,
+      leaveAll: false,
+      hasWon: false,
+      winner: "",
+      justWon: false
     };
   }
 
   render() {
     let socketio = this.props.socket;
     const leftroom = this.state.leftroom;
+    const leaveAll = this.state.leaveAll;
     const start = this.state.start;
+
+    const hasWon = this.state.hasWon;
+    const justWon = this.state.justWon;
   
     // Executes when someone leaves a room
     socketio.removeAllListeners("leave_room_to_client");
@@ -37,6 +45,25 @@ class Game extends React.Component {
         start: true
       })
     });
+
+    console.log("leftroom: " + leftroom + " leaveall: " + leaveAll);
+
+    socketio.removeAllListeners("win_to_client");
+    socketio.on("win_to_client", (data) => {
+        this.setState({
+            hasWon: true,
+            winner: data.winner,
+            justWon: true,
+            gamerooms: data.game_list
+        })
+    })
+
+    if(hasWon){
+      alert(this.state.winner + " won the game!")
+      return (
+        <Room username={this.props.username} game_list={this.state.gamerooms} socket={socketio} />
+      )
+    }
 
     // If a user left the room, then display the list of rooms
     if(leftroom){

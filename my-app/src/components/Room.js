@@ -11,8 +11,6 @@ class Room extends React.Component {
             current_game: null,
             isForfeit: false,
             forfeiter: "",
-            hasWon: false,
-            winner: ""
         };
     }
 
@@ -28,7 +26,7 @@ class Room extends React.Component {
         const isForfeit = this.state.isForfeit;
         const forfeiter = this.state.forfeiter;
 
-        const hasWon = this.state.hasWon;
+        
 
         results.push(
             <div className="game_name" key={"game_name"}>
@@ -65,7 +63,8 @@ class Room extends React.Component {
                 joinedRoom: true,
                 current_game: data.this_game,
                 isForfeit: data.isForfeit,
-                forfeiter: data.forfeiter
+                forfeiter: data.forfeiter,
+                hasWon: false,
             })
         })
         
@@ -81,37 +80,18 @@ class Room extends React.Component {
                 gamerooms: data.game_list,
                 joinedRoom: false, 
                 isForfeit: data.isForfeit,
-                forfeiter: data.forfeiter
+                forfeiter: data.forfeiter,
+                hasWon: false
             })
-
-            if(this.state.hasWon == true){
-                this.setState({
-                    hasWon: false
-                })
-            }
+            
         })
 
-        socketio.removeAllListeners("win_to_client");
-        socketio.on("win_to_client", (data) => {
-            this.setState({
-                hasWon: true,
-                winner: data.winner
-            })
-        })
-
+      
         if(joinedRoom){
 
-            if(hasWon){
-                return(
-                    <div className="win_game" key={"win"}>
-                        <p>{this.state.winner} has won!</p>
-                        <button className="after_game_leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: current_game, user: this.props.username })}>Leave Game Room</button>
-                    </div> 
-                )
-            }
-
-            else if(current_game.userlist.length == 2){
+            if(current_game.userlist.length == 2){
                 console.log("2 USERS ARE IN THE ROOM");
+
                 return (
                     <Game current_game={current_game} username={this.props.username} socket={socketio}/>
                 ) 
@@ -119,7 +99,7 @@ class Room extends React.Component {
             }
             else{
                 console.log("forfeit state in ROOM is: "+isForfeit);
-                if(isForfeit == true && hasWon == false){
+                if(isForfeit == true){
                     return (
                         <div className="forfeit_game" key={"forfeit"}>
                             <p>You are the Winner! {forfeiter} forfeited.</p>
