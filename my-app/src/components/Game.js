@@ -40,9 +40,9 @@ class Game extends React.Component {
   }
 
   componentWillUnmount() {
-    if(this.state.hasWon == false){
+    // if(this.state.hasWon == false){
       clearInterval(this.timerID);
-    }
+    // }
   }
 
   render() {
