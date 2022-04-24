@@ -56,6 +56,37 @@ div#userlist {
     font-size: 1.7vw;
 }
 
+div#leaver {
+    position: relative;
+    top: 2vw;
+}
+
+button.leave_button {
+    position: relative;
+    top: 2vw;
+
+}
+
+button {
+    padding: 0.57vw;
+    font-size: 1.5vw;
+    background-color: #3c72ff;
+    color: white;
+    border-radius: 0.6vw;
+    border: none;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+p.room_title {
+    margin-top: 1vw;
+    margin-bottom: 1vw;
+}
+
+button:hover{
+    background-color: #2c62eb;
+}
+
 .game-board{
     display: grid;
     grid-template-columns: 4vw 4vw 4vw 4vw 4vw 4vw 4vw 4vw 4vw 4vw 4vw;
@@ -68,6 +99,36 @@ div#userlist {
 
 .game {
     margin-left: 5vw;
+    position: relative;
+    bottom: 7vw;
+}
+
+div#game-info {
+    position: relative;
+    bottom: 7vw;
+}
+
+.game_name {
+    justify-content: space-between;
+    display: flex;
+}
+
+div#menu {
+    width: 59vw;
+}
+
+input#room_input {
+    width: 26vw;
+    border-radius: 0.5vw;
+    border: solid 1px black;
+    font-size: 1.5vw;
+    padding: 0.5vw;
+}
+
+::placeholder {
+    font-size: 1.5vw;
+    padding: 0.5vw;
+    padding-top: 1.5vw;
 }
 
 p.ready {

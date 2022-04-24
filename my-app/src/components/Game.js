@@ -116,7 +116,7 @@ class Game extends React.Component {
       if(start){
         results.push(
           <div id="game-info" key={"game_info"}>
-            <div>
+            <div id="leaver">
               <p id="time">Time: {this.state.date.toLocaleTimeString()}</p>
               <button className="leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: this.props.current_game, user: this.props.username }) }>Leave Game</button>
             </div>
@@ -143,7 +143,7 @@ class Game extends React.Component {
       else{
         results.push(
           <div id="game-info" key={"game_info"}>
-            <div>
+            <div id="leaver">
               <p id="time"></p>
               <button className="leave_button" onClick={() => socketio.emit("leave_room_to_server", { this_game: this.props.current_game, user: this.props.username }) }>Leave Game</button>
             </div>
