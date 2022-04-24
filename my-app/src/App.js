@@ -63,7 +63,7 @@ class App extends React.Component {
         <div className="App">
           <label>Username:</label>
           <input id="username" type="text" />
-          <button onClick={() => this.login(document.getElementById("username").value)}>
+          <button id="logon" onClick={() => this.login(document.getElementById("username").value)}>
             Log on 
           </button>
         </div>

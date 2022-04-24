@@ -111,15 +111,15 @@ class Square extends React.Component {
     // Determine if the current square is a label
     if(isLabel === "false"){ 
       if(isPicked){ 
-        document.getElementById(this.state.pickedVal).style.backgroundColor = "blue"; 
+        document.getElementById(this.state.pickedVal).style.backgroundColor = "#074bff"; 
       }
 
       if(isHit){ 
-        document.getElementById(this.state.hitVal).style.backgroundColor = "green";  
+        document.getElementById(this.state.hitVal).style.backgroundColor = "#7bc100";  
       }
 
       if(isMiss){
-        document.getElementById(this.state.missVal).style.backgroundColor = "red"; 
+        document.getElementById(this.state.missVal).style.backgroundColor = "rgb(255 0 55)"; 
       }
 
       if(isSub){

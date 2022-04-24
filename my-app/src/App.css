@@ -11,12 +11,16 @@ button.square {
 }
 
 button.square:hover{
-    border: 1px solid white;
+    border: 0px;
     height: 4.99vw;
     width: 5vw;
-    background-color: rgb(0, 106, 255); 
+    background-color: #518eff; 
     z-index: 4; 
     position: relative;
+}
+
+button#logon {
+    width: 7vw;
 }
 
 .board-row:hover button.square:not(:hover) {
@@ -25,11 +29,34 @@ button.square:hover{
     width: 5vw;
     z-index: 2;
     position: relative;
+    border: 1.5px solid #020270;
 }
 
-.game-board:hover .board-row:not(:hover) button.square:not(:hover) {
-    /* background-color: rgb(0, 255, 213); */
-    /* width: 3vw; */
+/* .game-board:hover .board-row:not(:hover) button.square:not(:hover) {
+    background-color: rgb(0, 255, 213); */
+    /* border: 0.1px solid #020270; */
+    /* width: 3vw;
+} /*
+
+/* .game-board:hover .board-row:not(.board-row:not(:hover) + .board-row:hover) button.square:not(:hover) {
+    background-color: rgb(0, 255, 213);
+    width: 3vw;
+} */
+
+.App {
+    width: 48vw;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+
+input#username {
+    width: 29vw;
+    border-radius: 0.5vw;
+    border: solid 1px black;
+    font-size: 1.5vw;
+    padding: 0.5vw;
 }
 
 div#root {
@@ -88,7 +115,7 @@ button {
 }
 
 p.room_title {
-    margin-top: 1vw;
+    margin-top: 0vw;
     margin-bottom: 1vw;
 }
 
@@ -101,6 +128,13 @@ button:hover{
     grid-template-columns: 4vw 4vw 4vw 4vw 4vw 4vw 4vw 4vw 4vw 4vw 4vw;
     grid-template-rows: 4vw 4vw 4vw 4vw 4vw 4vw 4vw 4vw 4vw 4vw 4vw;
     justify-items: center;
+}
+
+.rooms {
+    background-color: #cbe5ff;
+    padding: 2vw;
+    margin-top: 2vw;
+    border-radius: 1vw;
 }
 
 .label {

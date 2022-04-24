@@ -31,7 +31,7 @@ class Room extends React.Component {
         menu.push(
             <div className="game_name" key={"game_name"}>
                 <label className="labels">Gameroom name: </label>
-                <input type="text" placeholder="Type in a name for a chatroom..." id="room_input" />
+                <input type="text" placeholder="Type in a name for a game room..." id="room_input" />
                 <button id="send_room" onClick={() => socketio.emit("insert_room_to_server", { user: this.props.username, game_name: document.getElementById("room_input").value })}>
                     Create Game Room
                 </button>
@@ -48,7 +48,7 @@ class Room extends React.Component {
                 );
             }
         }
-        
+
         results.push(
             <div id="menu" key={menu}>
                 {menu}
