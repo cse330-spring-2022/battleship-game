@@ -13,10 +13,12 @@ class Square extends React.Component {
       isHit: false,
       isMiss: false,
       isSub: false,
+      isClose: false,
       subVal: "",
       hitVal: "",
       missVal: "",
       pickedVal: "",
+      closeVal: "",
       isClicked: false
     } 
 
@@ -57,6 +59,7 @@ class Square extends React.Component {
     const isHit = this.state.isHit;
     const isMiss = this.state.isMiss;
     const isSub = this.state.isSub;
+    const isClose = this.state.isClose;
     const isClicked = this.state.isClicked;
     const username = this.state.username;
     
@@ -98,6 +101,18 @@ class Square extends React.Component {
       }) 
     })
 
+    // This is executes when a close hit is detected
+    socketio.removeAllListeners("close_to_client");
+    socketio.on("close_to_client", (data) => {
+      this.setState({
+        isClicked: true,
+        isClose: true,
+        closeVal: data.position,
+        current_game: data.this_game,
+        username: data.username
+      }) 
+    })
+
     // This is displays what the victim gets on their screen
     socketio.on("sub_to_client", (data) => {
       this.setState({
@@ -116,6 +131,10 @@ class Square extends React.Component {
 
       if(isHit){ 
         document.getElementById(this.state.hitVal).style.backgroundColor = "#7bc100";  
+      }
+
+      if(isClose){
+        document.getElementById(this.state.closeVal).style.backgroundColor = "#f3dc04"; 
       }
 
       if(isMiss){

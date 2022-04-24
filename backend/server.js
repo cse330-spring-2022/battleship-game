@@ -27,6 +27,7 @@ function Gameroom(owner, name){
 
     //contains the moves list as a list of postiions
     this.movelist = [];
+    this.easy = false;
 
 }
 
@@ -404,11 +405,50 @@ io.sockets.on("connection", function (socket) {
         }
 
         
+        let position_letter = data["position"][0];
+        let index = 0;
+        //Citation for ascii conversion: https://www.techiedelight.com/character-to-ascii-code-javascript/
+        let ascii = position_letter.charCodeAt(index);
+        console.log("position_letter is: " + position_letter + ". the character val is: " + ascii);
+
+        let position = data["position"];
+        //Citation for regex: https://stackoverflow.com/questions/10003683/how-can-i-extract-a-number-from-a-string-in-javascript
+        let position_num = position.replace(/\D/g, "");
+        console.log("this is position_num: " + position_num); 
+
+        for(let i = 0; i < gamerooms[game_index].userlist[victim_index].ships.length; i++){ 
+            
+            let ship_position = gamerooms[game_index].userlist[victim_index].ships[i];
+            let ship_position_num = ship_position.replace(/\D/g, "");
+
+            let ship_position_letter = gamerooms[game_index].userlist[victim_index].ships[i][0]
+            let ship_index = 0;
+            let ship_ascii = ship_position_letter.charCodeAt(ship_index);
+
+            if(ship_position_letter == position_letter){
+                if(Math.abs(position_num - ship_position_num) == 1){
+                    console.log("this is 1 off and should be yellow for horizontal");
+                    // send out the updated list of the game and the list of gamerooms
+                    io.sockets.to(`${data["this_game"].name}`).emit("close_to_client", { username: gamerooms[game_index].userlist[user_index], 
+                        this_game: gamerooms[game_index], position: data["position"]});
+                    return;
+                }
+            }
+
+            else if(ship_position_num == position_num){
+                if(Math.abs(ship_ascii - ascii) == 1){
+                    console.log("this is 1 off and should be yellow for vertical");
+                    // send out the updated list of the game and the list of gamerooms
+                    io.sockets.to(`${data["this_game"].name}`).emit("close_to_client", { username: gamerooms[game_index].userlist[user_index], 
+                        this_game: gamerooms[game_index], position: data["position"]});
+                    return;
+                }
+            }
+        }
+
         // send out the updated list of the game and the list of gamerooms
         io.sockets.to(`${data["this_game"].name}`).emit("miss_to_client", { username: gamerooms[game_index].userlist[user_index], 
             this_game: gamerooms[game_index], position: data["position"]});
-
-     
 
     });
 
