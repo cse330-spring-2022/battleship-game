@@ -452,13 +452,12 @@ io.sockets.on("connection", function (socket) {
                 }
             }
         }
-
+        let victimId = gamerooms[game_index].userlist[victim_index].socket;
         // send out the updated list of the game and the list of gamerooms
-        io.sockets.to(`${data["this_game"].name}`).emit("miss_to_client", { username: gamerooms[game_index].userlist[user_index], 
+        io.sockets.to(userId).emit("miss_to_client", { username: gamerooms[game_index].userlist[user_index], 
             this_game: gamerooms[game_index], position: data["position"]});
-
+        io.sockets.to(victimId).emit("opponent_miss_to_client", { username: gamerooms[game_index].userlist[user_index], 
+            this_game: gamerooms[game_index], position: data["position"]});
     });
-
-
 
 });

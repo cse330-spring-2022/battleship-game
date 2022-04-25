@@ -12,11 +12,13 @@ class Square extends React.Component {
       username: this.props.username,
       isHit: false,
       isMiss: false,
+      isOppMiss: false,
       isSub: false,
       isClose: false,
       subVal: "",
       hitVal: "",
       missVal: "",
+      oppMissVal: "",
       pickedVal: "",
       closeVal: "",
       isClicked: false
@@ -59,6 +61,7 @@ class Square extends React.Component {
     const current_game = this.state.current_game;
     const isHit = this.state.isHit;
     const isMiss = this.state.isMiss;
+    const isOppMiss = this.state.isOppMiss;
     const isSub = this.state.isSub;
     const isClose = this.state.isClose;
     const isClicked = this.state.isClicked;
@@ -120,10 +123,19 @@ class Square extends React.Component {
         isClicked: true,
         isSub: true,
         subVal: data.position,
-        current_game: data.this_game,
+        current_game: data.this_game
       }) 
     })
-    
+
+    // This is displays what the opponent missed on the player's screen
+    socketio.on("opponent_miss_to_client", (data) => {
+      this.setState({
+        isClicked: true,
+        isOppMiss: true,
+        oppMissVal: data.position,
+        current_game: data.this_game
+      }) 
+    })
     // Determine if the current square is a label
     if(isLabel === "false"){ 
       if(isPicked){ 
@@ -144,6 +156,10 @@ class Square extends React.Component {
       if(isSub){
         document.getElementById(this.state.subVal).style.backgroundColor = "gray";
       }
+      if(isOppMiss){
+        document.getElementById(this.state.oppMissVal).style.backgroundColor = "#ffcccb";
+      }
+
       // When the game starts, it allows you to attack
       if(this.props.start){
   
