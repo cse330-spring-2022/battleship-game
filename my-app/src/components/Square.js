@@ -123,28 +123,29 @@ class Square extends React.Component {
         current_game: data.this_game,
       }) 
     })
-
+    
     // Determine if the current square is a label
     if(isLabel === "false"){ 
-     
+      if(isPicked){ 
+        document.getElementById(this.state.pickedVal).style.backgroundColor = "#074bff"; 
+      }
+      if(isHit){ 
+        document.getElementById(this.state.hitVal).style.backgroundColor = "#7bc100";  
+      }
+
+      if(isClose){
+        document.getElementById(this.state.closeVal).style.backgroundColor = "#f3dc04"; 
+      }
+
+      if(isMiss){
+        document.getElementById(this.state.missVal).style.backgroundColor = "rgb(255 0 55)"; 
+      }
+
+      if(isSub){
+        document.getElementById(this.state.subVal).style.backgroundColor = "gray";
+      }
       // When the game starts, it allows you to attack
       if(this.props.start){
-
-        if(isHit){ 
-          document.getElementById(this.state.hitVal).style.backgroundColor = "#7bc100";  
-        }
-  
-        if(isClose){
-          document.getElementById(this.state.closeVal).style.backgroundColor = "#f3dc04"; 
-        }
-  
-        if(isMiss){
-          document.getElementById(this.state.missVal).style.backgroundColor = "rgb(255 0 55)"; 
-        }
-  
-        if(isSub){
-          document.getElementById(this.state.subVal).style.backgroundColor = "gray";
-        }
   
         return (
           <button className="square" id={this.props.position} key={this.props.position} onClick={() => this.attack()}>
@@ -155,11 +156,6 @@ class Square extends React.Component {
 
       // Otherwise, allow the user to pick a ship
       else{
-
-        if(isPicked){ 
-          document.getElementById(this.state.pickedVal).style.backgroundColor = "#074bff"; 
-        }
-
         return (
           <button className="square" id={this.props.position} key={this.props.position} onClick={() => this.pick()}>
             {this.props.value}

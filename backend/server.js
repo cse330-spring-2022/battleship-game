@@ -35,6 +35,7 @@ function User(name){
     this.name = name;
     this.movelist = [];
     this.ships = [];
+   // this.correct_ships = [];
     this.score = 0;
     this.ready = false;
     this.socket = "";
@@ -377,6 +378,7 @@ io.sockets.on("connection", function (socket) {
                     console.log("WE HAVE A WINNER: " + winner);
                 }
 
+
                 gamerooms[game_index].userlist[victim_index].ships.splice(i, 1); // remove number using index
                 
                 let victimId = gamerooms[game_index].userlist[victim_index].socket;
@@ -429,7 +431,7 @@ io.sockets.on("connection", function (socket) {
                 if(Math.abs(position_num - ship_position_num) == 1){
                     console.log("this is 1 off and should be yellow for horizontal");
                     // send out the updated list of the game and the list of gamerooms
-                    io.sockets.to(`${data["this_game"].name}`).emit("close_to_client", { username: gamerooms[game_index].userlist[user_index], 
+                    io.sockets.to(userId).emit("close_to_client", { username: gamerooms[game_index].userlist[user_index], 
                         this_game: gamerooms[game_index], position: data["position"]});
                     return;
                 }
@@ -439,7 +441,7 @@ io.sockets.on("connection", function (socket) {
                 if(Math.abs(ship_ascii - ascii) == 1){
                     console.log("this is 1 off and should be yellow for vertical");
                     // send out the updated list of the game and the list of gamerooms
-                    io.sockets.to(`${data["this_game"].name}`).emit("close_to_client", { username: gamerooms[game_index].userlist[user_index], 
+                    io.sockets.to(userId).emit("close_to_client", { username: gamerooms[game_index].userlist[user_index], 
                         this_game: gamerooms[game_index], position: data["position"]});
                     return;
                 }
