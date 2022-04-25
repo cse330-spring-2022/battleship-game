@@ -35,7 +35,7 @@ function User(name){
     this.name = name;
     this.movelist = [];
     this.ships = [];
-   // this.correct_ships = [];
+    this.correct_ships = [];
     this.score = 0;
     this.ready = false;
     this.socket = "";
@@ -369,17 +369,21 @@ io.sockets.on("connection", function (socket) {
         for(let i = 0; i < gamerooms[game_index].userlist[victim_index].ships.length; i++){
             if(gamerooms[game_index].userlist[victim_index].ships[i] == data["position"]){
 
-                gamerooms[game_index].userlist[user_index].score++;
+                
+                if(!gamerooms[game_index].userlist[user_index].correct_ships.includes(data["position"])){
+                    gamerooms[game_index].userlist[user_index].correct_ships.push(data["position"]);
+                    gamerooms[game_index].userlist[user_index].score++;
+                }
+                
                 if(gamerooms[game_index].userlist[user_index].score == 7){
-                   
                     winner = gamerooms[game_index].userlist[user_index].name;
                     hasWon = true;
 
                     console.log("WE HAVE A WINNER: " + winner);
                 }
 
-
-                gamerooms[game_index].userlist[victim_index].ships.splice(i, 1); // remove number using index
+                
+                //gamerooms[game_index].userlist[victim_index].ships.splice(i, 1); // remove number using index
                 
                 let victimId = gamerooms[game_index].userlist[victim_index].socket;
 
@@ -390,6 +394,7 @@ io.sockets.on("connection", function (socket) {
 
                 if(hasWon){
                     gamerooms[game_index].userlist[user_index].ships = [];
+                    gamerooms[game_index].userlist[user_index].correct_ships = [];
                     gamerooms[game_index].userlist[user_index].ready = false;
                     gamerooms[game_index].userlist[user_index].score = 0;
                     gamerooms[game_index].userlist[user_index].movelist = [];
