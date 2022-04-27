@@ -16,8 +16,6 @@ class Room extends React.Component {
 
     render() {
 
-        console.log("this is the username we want: " + this.props.username.name);
-
         const results = [];
         let socketio = this.props.socket;
         const joinedRoom = this.state.joinedRoom;
@@ -54,7 +52,7 @@ class Room extends React.Component {
                 {menu}
             </div>
         )
-
+        // Inserts a game room into the game list
         socketio.removeAllListeners("insert_room_to_client");
         socketio.on("insert_room_to_client", (data) => {
             this.setState({
@@ -64,7 +62,7 @@ class Room extends React.Component {
 
         
        
-        
+        // Allows a player to join a game room
         socketio.removeAllListeners("join_room_to_client");
         socketio.on("join_room_to_client", (data) => {
             this.setState({
@@ -76,12 +74,12 @@ class Room extends React.Component {
             })
         })
         
-        
+        // Error message is sent when there is an issue
         socketio.removeAllListeners("error_to_client");
         socketio.on("error_to_client", (data) => {
             alert(data.message);
         });
-
+        // Allows player to leave the game room to enter the main room again
         socketio.removeAllListeners("leave_room_to_client");
         socketio.on("leave_room_to_client", (data) => {
             this.setState({
@@ -96,7 +94,7 @@ class Room extends React.Component {
 
       
         if(joinedRoom){
-
+            // If the max number of players are in the game room, a game is in progress
             if(current_game.userlist.length == 2){
                 console.log("2 USERS ARE IN THE ROOM");
 

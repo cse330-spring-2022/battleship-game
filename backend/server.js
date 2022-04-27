@@ -31,6 +31,7 @@ function Gameroom(owner, name){
 
 }
 
+// Making a user object
 function User(name){
     this.name = name;
     this.movelist = [];
@@ -58,10 +59,7 @@ app.post('/login', (req, res) => {
         return;
     }
 
-    //console.log("THIS IS THE USERNAME " + user);
     let new_user = new User(user);
-    //current_user = new_user;
-   // console.log("the surrent user has been set to: " + current_user.name);
 
     if(!allowed_users.includes(new_user.name)){
         allowed_users.push(new_user.name);
@@ -79,14 +77,12 @@ io.sockets.on("connection", function (socket) {
     console.log("connected");
 
     let userId = socket.id;
-    //console.log("this is the user id " + userId);
+
     socket.join(userId);
     socket.join("not_in_a_game");
 
     // When it gets this message, it inserts a new room to the added to the gameroom
     socket.on('insert_room_to_server', function (data) {
-        //socket.join("not_in_a_game");
-
 
         if(data["game_name"] == ""){
             let msg = "Game Room can't be blank!";
@@ -164,7 +160,6 @@ io.sockets.on("connection", function (socket) {
     // When it gets this message, it delets the user from the gameroom's userlist
     socket.on('leave_room_to_server', function(data) {
 
-        //console.log("this user: " + data["user"] + " is leaving this game: " + data["this_game"].name)
         socket.join("not_in_a_game");
 
         let index_game = 0;
@@ -203,12 +198,9 @@ io.sockets.on("connection", function (socket) {
             forfeit = true;
         }
 
-        //console.log("the state of forfeit is : " + forfeit);
-
         if(game_index != -1 || user_index != -1 ){
             gamerooms[game_index].userlist.splice(user_index, 1); // remove number using index
         }
-
 
         socket.leave(`${data["this_game"].name}`);
 
@@ -219,39 +211,6 @@ io.sockets.on("connection", function (socket) {
         // the specific user has to leave
         io.sockets.to(userId).emit("leave_room_to_client", { game_list: gamerooms, isForfeit: forfeit, forfeiter: data["user"].name }); // broadcast the message to other users
     });
-
-    // When it gets this message, it delets the user from the gameroom's userlist
-    socket.on('leave_all_to_server', function(data) {
-
-        console.log("leave allll")
-
-        socket.join("not_in_a_game");
-
-        let index_game = 0;
-
-        let game_index = -1;
-
-        //Gets the index of the game that we want to delete the user from
-        gamerooms.forEach(function(game){
-            if(game.name == data["this_game"].name){
-                game_index = index_game;
-                return;
-            }
-            index_game++;
-        })
-
-        gamerooms[game_index].userlist = [];
-
-        console.log("current game: " + data["this_game"].name);
-        console.log("the user list: " + gamerooms[game_index].userlist[0]);
-
-        //gamerooms.splice(game_index, 1);
-        
-        // the specific user has to leave
-        io.sockets.to(`${data["this_game"].name}`).emit("leave_all_to_client", { game_list: gamerooms }); // broadcast the message to other users
-       // socket.leave(`${data["this_game"].name}`);
-    });
-
 
     socket.on('pick_to_server', function(data) {
 
@@ -289,7 +248,6 @@ io.sockets.on("connection", function (socket) {
         
         // Checks if the limit of ships picked is reached
         let isLimitReached = false;
-        //console.log("this is the name of the user when picked: " + data["user"].name);
 
         if(gamerooms[game_index].userlist[user_index].ships.length == max_ships){
           //
@@ -315,11 +273,6 @@ io.sockets.on("connection", function (socket) {
             
         }
 
-        //console.log("ready status of: " +  gamerooms[game_index].userlist[user_index].name + " is " + gamerooms[game_index].userlist[user_index].ready);
-       
-        //console.log("the value of isLimitReached: " + isLimitReached);
-
-        
         // send out the updated list of the game and the list of gamerooms
         io.sockets.to(userId).emit("pick_to_client", { username: gamerooms[game_index].userlist[user_index], 
             this_game: gamerooms[game_index], position: data["position"], status: isLimitReached });
@@ -362,8 +315,6 @@ io.sockets.on("connection", function (socket) {
             index_user++;
         })
 
-        //console.log("this is the name of the user when picked: " + data["user"].name);
-
         let victim_index = data["victim_index"];
 
         for(let i = 0; i < gamerooms[game_index].userlist[victim_index].ships.length; i++){
@@ -381,9 +332,6 @@ io.sockets.on("connection", function (socket) {
 
                     console.log("WE HAVE A WINNER: " + winner);
                 }
-
-                
-                //gamerooms[game_index].userlist[victim_index].ships.splice(i, 1); // remove number using index
                 
                 let victimId = gamerooms[game_index].userlist[victim_index].socket;
 
@@ -399,9 +347,10 @@ io.sockets.on("connection", function (socket) {
                     gamerooms[game_index].userlist[user_index].score = 0;
                     gamerooms[game_index].userlist[user_index].movelist = [];
                     
+                    // deletes the game room when the user has won
                     gamerooms.splice(game_index, 1);
 
-                    
+                    //send to everybody in the room that there is a win
                     io.in(`${data["this_game"].name}`).socketsJoin("not_in_a_game");
                     io.sockets.to(`${data["this_game"].name}`).emit("win_to_client", { winner: winner, game_list: gamerooms });
                     io.in(`${data["this_game"].name}`).socketsLeave(`${data["this_game"].name}`);
@@ -432,6 +381,7 @@ io.sockets.on("connection", function (socket) {
             let ship_index = 0;
             let ship_ascii = ship_position_letter.charCodeAt(ship_index);
 
+            // calculates what it's going to be for a close horizontal miss
             if(ship_position_letter == position_letter){
                 if(Math.abs(position_num - ship_position_num) == 1){
                     console.log("this is 1 off and should be yellow for horizontal");
@@ -442,6 +392,7 @@ io.sockets.on("connection", function (socket) {
                 }
             }
 
+            // calculates what it's going to be for a close vertical miss
             else if(ship_position_num == position_num){
                 if(Math.abs(ship_ascii - ascii) == 1){
                     console.log("this is 1 off and should be yellow for vertical");

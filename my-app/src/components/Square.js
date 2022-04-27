@@ -71,8 +71,6 @@ class Square extends React.Component {
     socketio.removeAllListeners("pick_to_client");
     socketio.on("pick_to_client", (data) => {
       let pi = this.state.isPicked;
-      console.log("position picked: " + data.position);
-      console.log("is picked " + pi);
       this.setState({
         isPicked: true,
         pickedVal: data.position,
@@ -138,24 +136,27 @@ class Square extends React.Component {
     })
     // Determine if the current square is a label
     if(isLabel === "false"){ 
+      // Ships chosen by the player are blue
       if(isPicked){ 
         document.getElementById(this.state.pickedVal).style.backgroundColor = "#074bff"; 
       }
+      // If player hits a ship, it is green
       if(isHit){ 
         document.getElementById(this.state.hitVal).style.backgroundColor = "#7bc100";  
       }
-
+      // If player is close to a ship, it is yellow
       if(isClose){
         document.getElementById(this.state.closeVal).style.backgroundColor = "#f3dc04"; 
       }
-
+      // If player misses, it is red
       if(isMiss){
         document.getElementById(this.state.missVal).style.backgroundColor = "rgb(255 0 55)"; 
       }
-
+      // If a player's ship is hit by an opponent, it is shown as gray on their screen
       if(isSub){
         document.getElementById(this.state.subVal).style.backgroundColor = "gray";
       }
+      // If an player misses, it is shown as light red on the opponent's screen
       if(isOppMiss){
         document.getElementById(this.state.oppMissVal).style.backgroundColor = "#ffcccb";
       }
